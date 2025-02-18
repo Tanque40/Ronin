@@ -1,0 +1,6 @@
+[submodule "vendor/repos/premake"]
+	path = vendor/repos/premake
+	url = https://github.com/premake/premake-core.git
+[submodule "ronin/vendor/repos/GLEW"]
+	path = ronin/vendor/repos/GLEW
+	url = https://github.com/nigels-com/glew.git
