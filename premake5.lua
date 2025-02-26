@@ -6,11 +6,17 @@ configurations {
 	'Release'
 }
 
-outputDir = '%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}'
+OutputDir = '%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}'
 
 -- ! Include directories relative to root folder
 includeDir = {}
 includeDir['GLEW'] = 'ronin/vendor/repos/GLEW/include'
+includeDir["GLFW"] = "ronin/vendor/repos/GLFW/include"
+includeDir["GLM"] = "ronin/vendor/repos/GLM/include"
+
+-- ? This include search for other lua files
+
+include "ronin/vendor/repos/GLFW"
 
 project 'Ronin'
 location 'ronin'
@@ -19,8 +25,8 @@ language 'C++'
 cppdialect 'C++latest'
 staticruntime 'on'
 
-targetdir("%{prj.location}/bin/" .. outputDir .. "/%{prj.name}")
-objdir("%{prj.location}/bin-int/" .. outputDir .. "/%{prj.name}")
+targetdir("%{prj.location}/bin/" .. OutputDir .. "/%{prj.name}")
+objdir("%{prj.location}/bin-int/" .. OutputDir .. "/%{prj.name}")
 
 files {
 	"%{prj.location}/src/**.h",
@@ -29,9 +35,17 @@ files {
 
 defines {
 	"_CRT_SECURE_NO_WARNINGS",
+	"GLFW_INCLUDE_NONE"
+}
+
+includedirs {
+	"%{includeDir.GLFW}",
+	"%{includeDir.GLEW}",
+	"%{includeDir.GLM}",
 }
 
 links {
+	"GLFW",
 	"GLEW",
 	"Cocoa.framework",
 	"OpenGL.framework",

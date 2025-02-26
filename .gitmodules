@@ -4,3 +4,9 @@
 [submodule "ronin/vendor/repos/GLEW"]
 	path = ronin/vendor/repos/GLEW
 	url = https://github.com/nigels-com/glew.git
+[submodule "ronin/vendor/repos/GLFW"]
+	path = ronin/vendor/repos/GLFW
+	url = https://github.com/Tanque40/glfw.git
+[submodule "ronin/vendor/repos/GLM"]
+	path = ronin/vendor/repos/GLM
+	url = https://github.com/g-truc/glm.git
