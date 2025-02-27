@@ -12,7 +12,7 @@ OutputDir = '%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}'
 includeDir = {}
 includeDir['GLEW'] = 'ronin/vendor/repos/GLEW/include'
 includeDir["GLFW"] = "ronin/vendor/repos/GLFW/include"
-includeDir["GLM"] = "ronin/vendor/repos/GLM/include"
+includeDir["GLM"] = "ronin/vendor/repos/GLM/"
 
 -- ? This include search for other lua files
 

@@ -1,6 +1,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -35,6 +37,9 @@ int main()
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
+
+	glm::vec3 x(0.0f, 1.0f, 2.5f);
+	std::cout << x.z << std::endl;
 
 	// glfw window creation
 	// --------------------
