@@ -13,10 +13,11 @@ includeDir = {}
 includeDir['GLEW'] = 'ronin/vendor/repos/GLEW/include'
 includeDir["GLFW"] = "ronin/vendor/repos/GLFW/include"
 includeDir["GLM"] = "ronin/vendor/repos/GLM/"
+includeDir["IMGUI"] = "ronin/vendor/repos/ImGUI/"
 
 -- ? This include search for other lua files
-
 include "ronin/vendor/repos/GLFW"
+include "ronin/vendor/repos/ImGUI"
 
 project 'Ronin'
 location 'ronin'
@@ -42,11 +43,13 @@ includedirs {
 	"%{includeDir.GLFW}",
 	"%{includeDir.GLEW}",
 	"%{includeDir.GLM}",
+	"%{includeDir.IMGUI}"
 }
 
 links {
 	"GLFW",
 	"GLEW",
+	"IMGUI",
 	"Cocoa.framework",
 	"OpenGL.framework",
 	"IOKit.framework",

@@ -10,3 +10,6 @@
 [submodule "ronin/vendor/repos/GLM"]
 	path = ronin/vendor/repos/GLM
 	url = https://github.com/g-truc/glm.git
+[submodule "ronin/vendor/repos/ImGUI"]
+	path = ronin/vendor/repos/ImGUI
+	url = https://github.com/Tanque40/imgui.git
