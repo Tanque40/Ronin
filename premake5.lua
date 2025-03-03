@@ -31,7 +31,10 @@ objdir("%{prj.location}/bin-int/" .. OutputDir .. "/%{prj.name}")
 
 files {
 	"%{prj.location}/src/**.h",
-	"%{prj.location}/src/**.cpp"
+	"%{prj.location}/src/**.cpp",
+	"%{prj.location}/src/**/**.h",
+	"%{prj.location}/src/**/**.cpp",
+	"%{prj.location}/res/**/**.glsl",
 }
 
 defines {
@@ -40,10 +43,11 @@ defines {
 }
 
 includedirs {
+	"%{prj.location}/src/",
 	"%{includeDir.GLFW}",
 	"%{includeDir.GLEW}",
 	"%{includeDir.GLM}",
-	"%{includeDir.IMGUI}"
+	"%{includeDir.IMGUI}",
 }
 
 links {

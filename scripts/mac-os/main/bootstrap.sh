@@ -18,3 +18,8 @@ cd ../../../../
 # Setup ronin project with premake
 
 ./vendor/repos/premake/bin/release/premake5 gmake
+
+# Build and run the project
+
+make
+./ronin/bin/Debug-macosx-ARM64/Ronin/Ronin
