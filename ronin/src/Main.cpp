@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "shader/shader.h"
 
@@ -17,6 +19,9 @@ void processInput(GLFWwindow* window);
 // settings
 const unsigned int SCR_WIDTH = 1080;
 const unsigned int SCR_HEIGHT = 720;
+
+unsigned int SCR_WIDTH_EX = 1080;
+unsigned int SCR_HEIGHT_EX = 720;
 
 int main(void) {
 	// glfw: initialize and configure
@@ -62,42 +67,60 @@ int main(void) {
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float vertices[] = {
+		// * front face
 		 0.5f,  0.5f, 0.0f,  // top right
 		 0.5f, -0.5f, 0.0f,  // bottom right
 		-0.5f, -0.5f, 0.0f,  // bottom left
 		-0.5f,  0.5f, 0.0f,   // top left
 
+		// * back face
 		 0.8f,  0.8f, 0.5f,  // top right
 		 0.8f, -0.2f, 0.5f,  // bottom right
 		-0.2f, -0.2f, 0.5f,  // bottom left
-		-0.2f,  0.2f, 0.5f,   // top left
+		-0.2f,  0.8f, 0.5f,   // top left
 
-		 0.5f,  0.5f, 0.0f,  // top right
+		// * left face
+		-0.5f,  0.5f, 0.0f,  // top right
+		-0.5f, -0.5f, 0.0f,  // bottom right
+		-0.2f, -0.2f, 0.5f,  // bottom left
+		-0.2f,  0.8f, 0.0f,   // top left
+
+		// * right face
+		 0.8f,  0.8f, 0.5f,  // top right
+		 0.8f, -0.2f, 0.5f,  // bottom right
+		 0.5f, -0.5f, 0.0f,  // bottom left
+		 0.5f,  0.5f, 0.0f,   // top left
+
+		 // * bottom face
+		 0.8f, -0.2f, 0.5f,  // top right
 		 0.5f, -0.5f, 0.0f,  // bottom right
 		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f,   // top left
+		-0.2f, -0.2f, 0.5f,   // top left
 
-		 0.5f,  0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f,   // top left
-
-		 0.5f,  0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f,   // top left
-
-		 0.5f,  0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f   // top left
+		// * top face
+		 0.8f,  0.8f, 0.5f,  // top right
+		 0.5f,  0.5f, 0.0f,  // bottom right
+		-0.5f,  0.5f, 0.0f,  // bottom left
+		-0.2f,  0.8f, 0.5f,   // top left
 	};
 	unsigned int indices[] = {  // note that we start from 0!
-		0, 1, 3,  // first Triangle
-		1, 2, 3,   // second Triangle
+		0, 1, 3,
+		1, 2, 3,
 
-		4, 5, 7,  // first Triangle
-		5, 6, 7   // second Triangle
+		4, 5, 7,
+		5, 6, 7,
+
+		8, 9, 11,
+		9, 10, 11,
+
+		12, 13, 15,
+		13, 14, 15,
+
+		16, 17, 19,
+		17, 18, 19,
+
+		20, 21, 23,
+		21, 22, 23,
 	};
 	unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
@@ -147,6 +170,25 @@ int main(void) {
 	bool show_another_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_ALWAYS);
+
+	//glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH_EX / (float)SCR_HEIGHT_EX, 0.1f, 100.0f);
+	glm::mat4 projectionMatrix = glm::ortho(
+		(float)SCR_WIDTH_EX / -2.0f,
+		(float)SCR_WIDTH_EX / 2.0f,
+		(float)SCR_HEIGHT_EX / -2.0f,
+		(float)SCR_HEIGHT_EX / 2.0f,
+		-1000.0f,
+		1000.0f);
+	std::cout << projectionMatrix[0][0] << std::endl;
+	glm::mat4 viewMatrix = glm::mat4(1.0f);
+	// note that we're translating the scene in the reverse direction of where we want to move
+	viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+
+	glm::mat4 modelMatrix = glm::mat4(1.0f);
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f));
+
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window)) {
@@ -177,7 +219,7 @@ int main(void) {
 			ImGui::SameLine();
 			ImGui::Text("counter = %d", counter);
 
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+			ImGui::Text("Application \n average %.3f ms/frame \n(%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 			ImGui::End();
 		}
 
@@ -196,11 +238,14 @@ int main(void) {
 
 		// render
 		// ------
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw our first triangle
 		mainShader.bind();
+		mainShader.SetuniformsMat4f("projection", projectionMatrix);
+		mainShader.SetuniformsMat4f("view", viewMatrix);
+		mainShader.SetuniformsMat4f("model", modelMatrix);
 		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 		//glDrawArrays(GL_TRIANGLES, 0, 6);
 		glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
@@ -232,6 +277,10 @@ void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -241,4 +290,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	// make sure the viewport matches the new window dimensions; note that width and
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
+
+	SCR_WIDTH_EX = width;
+	SCR_HEIGHT_EX = height;
 }
