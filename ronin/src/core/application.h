@@ -13,6 +13,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <spdlog/spdlog.h>
+
 #include "shader/shader.h"
 
 class Application {
@@ -25,8 +27,9 @@ private:
 	static void processInput(GLFWwindow* window);
 public:
 	static int Run() {
+
 		// glfw: initialize and configure
-	// ------------------------------
+		// ------------------------------
 		glfwInit();
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -186,6 +189,7 @@ public:
 
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(100.0f));
+		spdlog::info("Ronin running");
 
 		// render loop
 		// -----------

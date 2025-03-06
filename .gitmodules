@@ -13,3 +13,6 @@
 [submodule "ronin/vendor/repos/ImGUI"]
 	path = ronin/vendor/repos/ImGUI
 	url = https://github.com/Tanque40/imgui.git
+[submodule "ronin/vendor/repos/SPDLOG"]
+	path = ronin/vendor/repos/SPDLOG
+	url = https://github.com/gabime/spdlog.git

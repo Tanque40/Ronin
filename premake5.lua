@@ -14,6 +14,7 @@ includeDir['GLEW'] = 'ronin/vendor/repos/GLEW/include'
 includeDir["GLFW"] = "ronin/vendor/repos/GLFW/include"
 includeDir["GLM"] = "ronin/vendor/repos/GLM/"
 includeDir["IMGUI"] = "ronin/vendor/repos/ImGUI/"
+includeDir["SPDLOG"] = "ronin/vendor/repos/SPDLOG/include"
 
 -- ? This include search for other lua files
 include "ronin/vendor/repos/GLFW"
@@ -49,6 +50,7 @@ includedirs {
 	"%{includeDir.GLEW}",
 	"%{includeDir.GLM}",
 	"%{includeDir.IMGUI}",
+	"%{includeDir.SPDLOG}",
 }
 
 links {
