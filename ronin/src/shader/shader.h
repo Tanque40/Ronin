@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
+#include "roninpch.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -19,6 +18,7 @@ private:
 	ShaderProgramSource shaders;
 
 public:
+	inline Shader() {};
 	Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath);
 	Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath, const std::string& geometryFilePath);
 	~Shader();
@@ -27,9 +27,9 @@ public:
 	void unBind() const;
 
 	// set uniforms
-	void setUniform1i(const std::string& name, int value);
-	void setUniform4f(const std::string& name, glm::vec4 vector);
-	void SetuniformsMat4f(const std::string& name, const glm::mat4& mat4);
+	void SetUniform1i(const std::string& name, int value);
+	void SetUniform4f(const std::string& name, glm::vec4 vector);
+	void SetUniformsMat4f(const std::string& name, const glm::mat4& mat4);
 
 private:
 	std::string parseShader(const std::string& filepath);

@@ -29,11 +29,12 @@ staticruntime 'on'
 targetdir("%{prj.location}/bin/" .. OutputDir .. "/%{prj.name}")
 objdir("%{prj.location}/bin-int/" .. OutputDir .. "/%{prj.name}")
 
+pchheader "roninpch.h"
+pchsource "%{prj.location}/src/roninpch.cpp"
+
 files {
 	"%{prj.location}/src/**.h",
 	"%{prj.location}/src/**.cpp",
-	"%{prj.location}/src/**/**.h",
-	"%{prj.location}/src/**/**.cpp",
 	"%{prj.location}/res/**/**.glsl",
 }
 

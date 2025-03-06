@@ -1,9 +1,5 @@
 #include "shader/shader.h"
 
-#include <iostream>
-#include <fstream>
-#include <string>
-
 #include <GL/glew.h>
 
 Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath) : rendererId(0) {
@@ -30,15 +26,15 @@ void Shader::unBind() const {
 
 // * Uniforms
 
-void Shader::setUniform1i(const std::string& name, int value) {
+void Shader::SetUniform1i(const std::string& name, int value) {
 	glUniform1i(getUniformLocation(name), value);
 }
 
-void Shader::setUniform4f(const std::string& name, glm::vec4  vector) {
+void Shader::SetUniform4f(const std::string& name, glm::vec4  vector) {
 	glUniform4fv(getUniformLocation(name), 1, &vector[0]);
 }
 
-void Shader::SetuniformsMat4f(const std::string& name, const glm::mat4& mat4) {
+void Shader::SetUniformsMat4f(const std::string& name, const glm::mat4& mat4) {
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mat4[0][0]);
 }
 
