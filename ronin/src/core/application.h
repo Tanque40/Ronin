@@ -20,8 +20,8 @@
 class Application {
 private:
 	// settings
-	static const unsigned int SCR_WIDTH = 1080;
-	static const unsigned int SCR_HEIGHT = 720;
+	static const unsigned int SCR_WIDTH = 1280;
+	static const unsigned int SCR_HEIGHT = 960;
 
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	static void processInput(GLFWwindow* window);
