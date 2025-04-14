@@ -1,5 +1,7 @@
 #include "roninpch.h"
 
+#include <imgui.h>
+
 class Layer {
 private:
 	std::string m_layerName;
@@ -7,9 +9,9 @@ private:
 public:
 	Layer(const std::string& name = "Layer");
 	virtual ~Layer();
-	virtual void setup() {}
 	virtual void onAttach() {}
 	virtual void onDetach() {}
 	virtual void onUpdate() {}
 	virtual void onEvent() {}
+	virtual void onImGui( ImGuiIO& io ) {}
 };
