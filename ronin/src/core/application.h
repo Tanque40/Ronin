@@ -72,8 +72,6 @@ public:
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
-		bool show_another_window = false;
-
 		sandBox.onAttach();
 
 		// render loop
@@ -83,12 +81,7 @@ public:
 			// -----
 			processInput(window);
 
-			// render
-			// ------
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
 			sandBox.onUpdate();
-
 
 			// Start the Dear ImGui frame
 			ImGui_ImplOpenGL3_NewFrame();
@@ -97,7 +90,6 @@ public:
 			{
 				sandBox.onImGui(io);
 			}
-
 			// Rendering
 			ImGui::Render();
 
@@ -108,7 +100,6 @@ public:
 			// -------------------------------------------------------------------------------
 			glfwSwapBuffers(window);
 			glfwPollEvents();
-
 		}
 
 		sandBox.onDetach();
