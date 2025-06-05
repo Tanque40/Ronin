@@ -19,7 +19,7 @@ private:
 	glm::vec3 backTopLeftC, backTopRightC, backBottomLeftC, backBottomRightC;
 	glm::vec3 voxelOrigin; // ? By this moment backTopRightCC
 	glm::vec4 color = { 0.5f, 0.5f, 1.0f, 1.0f }; // ? Default whiteo
-	float vertex[48];
+	float vertex[144];
 
 public:
 	Voxel();

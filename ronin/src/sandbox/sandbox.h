@@ -7,6 +7,7 @@
 #include "core/layer.h"
 #include "shader/shader.h"
 #include "voxel/voxel.h"
+#include "sandbox/camera.h"
 
 class SandBox : public Layer {
 private:
@@ -14,8 +15,7 @@ private:
 	static const unsigned int SCR_WIDTH = 1280;
 	static const unsigned int SCR_HEIGHT = 960;
 	Shader* mainShader;
-	glm::vec4 tempColor = { 0.45f, 0.55f, 0.60f, 1.00f };
-	glm::mat4 projectionMatrix = glm::perspective(glm::radians(35.0f), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 90.0f);
+	glm::mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 90.0f);
 	//glm::mat4 projectionMatrix = glm::ortho(
 	//	(float)SCR_WIDTH / -2.0f,
 	//	(float)SCR_WIDTH / 2.0f,
@@ -25,8 +25,10 @@ private:
 	//	10.0f
 	//);
 	glm::mat4 viewMatrix = glm::mat4(1.0f);
+	Camera camera;
 	glm::mat4 modelMatrix = glm::mat4(1.0f);
 	unsigned int VBO, VAO, EBO;
+	bool firstMouse = true;
 
 	Voxel voxel;
 public:
