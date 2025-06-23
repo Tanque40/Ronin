@@ -10,18 +10,15 @@
 #include <GLFW/glfw3.h>
 
 #include "sandbox/sandbox.h"
+#include "core/timestep.h"
 
 class Application {
-private:
-	// settings
-	static const unsigned int SCR_WIDTH = 1280;
-	static const unsigned int SCR_HEIGHT = 960;
-
-	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-	static void processInput(GLFWwindow* window);
 public:
-	static int Run() {
+	// settings
+	static unsigned int SCR_WIDTH;
+	static unsigned int SCR_HEIGHT;
 
+	static int Run() {
 		// glfw: initialize and configure
 		// ------------------------------
 		glfwInit();
@@ -35,15 +32,15 @@ public:
 #endif
 		// glfw window creation
 		// --------------------
-		GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Ronin Project", NULL, NULL);
-		if (window == NULL)
-		{
+		GLFWwindow* window = glfwCreateWindow(Application::SCR_WIDTH, Application::SCR_HEIGHT, "Ronin Project", NULL, NULL);
+		if (window == NULL) {
 			std::cout << "Failed to create GLFW window" << std::endl;
 			glfwTerminate();
 			return -1;
 		}
 		glfwMakeContextCurrent(window);
-		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+		glfwSwapInterval(1);
+
 
 		// glew: load all OpenGL function pointers
 		// ---------------------------------------
@@ -54,8 +51,7 @@ public:
 			return -1;
 		}
 
-		SandBox sandBox;
-
+		SandBox sandBox(window);
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -73,22 +69,24 @@ public:
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
 		sandBox.onAttach();
-
+		float time = glfwGetTime(), lastFrameTime = glfwGetTime();
+		Timestep timestep = time - lastFrameTime;
+		lastFrameTime = time;
 		// render loop
 		// -----------
 		while (!glfwWindowShouldClose(window)) {
-			// input
-			// -----
-			processInput(window);
+			time = glfwGetTime();
+			timestep = time - lastFrameTime;
+			lastFrameTime = time;
 
-			sandBox.onUpdate();
+			sandBox.onUpdate(float(timestep));
 
 			// Start the Dear ImGui frame
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 			{
-				sandBox.onImGui(io);
+				sandBox.onImGui(io, float(timestep));
 			}
 			// Rendering
 			ImGui::Render();
@@ -98,15 +96,13 @@ public:
 
 			// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 			// -------------------------------------------------------------------------------
-			glfwSwapBuffers(window);
 			glfwPollEvents();
+			glfwSwapBuffers(window);
 		}
 
 		sandBox.onDetach();
 
-		// glfw: terminate, clearing all previously allocated GLFW resources.
-		// ------------------------------------------------------------------
-		glfwTerminate();
+
 		return 0;
 	}
 };

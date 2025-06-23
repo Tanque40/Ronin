@@ -5,14 +5,27 @@
 
 #include <imgui.h>
 
-SandBox::SandBox() {
+unsigned int SandBox::width = 1920, SandBox::height = 1080;
+bool SandBox::idViewPortChanged = false;
 
+SandBox::SandBox() {}
+
+SandBox::SandBox(GLFWwindow* _window) : window(_window) {
 }
 
 SandBox::~SandBox() {
 }
 
 void SandBox::onAttach() {
+	glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
+		// make sure the viewport matches the new window dimensions; note that width and
+		// height will be significantly larger than specified on retina displays.
+		SandBox::width = width;
+		SandBox::height = height;
+		SandBox::idViewPortChanged = true;
+		glViewport(0, 0, width, height);
+		});
+
 	camera = Camera(glm::vec3(0.0f, 0.0f, 10.0f));
 	unsigned int indices[] = {  // note that we start from 0!
 		0, 1, 3,
@@ -64,6 +77,8 @@ void SandBox::onAttach() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
 
+	projectionMatrix = glm::perspective(glm::radians(60.0f), (float)SandBox::width / (float)SandBox::height, 0.1f, 90.0f);
+
 	// note that we're translating the scene in the reverse direction of where we want to move
 	viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -10.0f));
 
@@ -80,7 +95,11 @@ void SandBox::onDetach() {
 	glDeleteBuffers(1, &EBO);
 }
 
-void SandBox::onUpdate() {
+void SandBox::onUpdate(Timestep timeStep) {
+	if (SandBox::idViewPortChanged) {
+		framebuffer_size_callback();
+	}
+	onEvent(window);
 	// render
 	// ------
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -97,22 +116,33 @@ void SandBox::onUpdate() {
 	// glBindVertexArray(0); // no need to unbind it every time
 }
 
-void SandBox::onEvent() {
+void SandBox::onEvent(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void SandBox::onImGui( ImGuiIO& io ) {
+void SandBox::onImGui(ImGuiIO& io, Timestep timeStep) {
 	ImGui::Begin("Ronin project");
-	ImGui::Text("Started menu for Ronin project.");
+	ImGui::Text("Starter menu for Ronin project.");
 	ImGui::Text("Thesis project to obtain a computer engeneer degree.");
-	if(ImGui::ColorEdit4("clear color", voxel.getVoxelColor()))
+	if (ImGui::ColorEdit4("clear color", voxel.getVoxelColor()))
 		updateBufferColor();
 	ImGui::Text(voxel.toString().c_str());
-	ImGui::Text("Application \n average %.3f ms/frame \n(%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	ImGui::Text("Application \n average %.3f ms/frame \n(%.1f FPS)", timeStep.getMilliseconds(), io.Framerate);
 	ImGui::End();
 }
 
-void SandBox::updateBufferColor(){
+void SandBox::updateBufferColor() {
 	float* data = voxel.getVertexData();
 
 	glBufferData(GL_ARRAY_BUFFER, 24 * 6 * sizeof(float), data, GL_DYNAMIC_DRAW);
+}
+
+void SandBox::framebuffer_size_callback() {
+	SandBox::idViewPortChanged = false;
+	projectionMatrix = glm::perspective(glm::radians(60.0f), (float)SandBox::width / (float)SandBox::height, 0.1f, 90.0f);
 }
