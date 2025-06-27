@@ -16,6 +16,6 @@ public:
 	virtual void onAttach() {}
 	virtual void onDetach() {}
 	virtual void onUpdate(Timestep timeStep) {}
-	virtual void onEvent(GLFWwindow* window) {}
+	virtual void onEvent(GLFWwindow* window, Timestep timeStep) {}
 	virtual void onImGui(ImGuiIO& io, Timestep timeStep) {}
 };

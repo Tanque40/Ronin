@@ -5,8 +5,10 @@
 
 #include <imgui.h>
 
-unsigned int SandBox::width = 1920, SandBox::height = 1080;
-bool SandBox::idViewPortChanged = false;
+#include "sandbox/globals.h"
+
+float lastX = 1920 / 2.0f;
+float lastY = 1080 / 2.0f;
 
 SandBox::SandBox() {}
 
@@ -20,67 +22,54 @@ void SandBox::onAttach() {
 	glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
 		// make sure the viewport matches the new window dimensions; note that width and
 		// height will be significantly larger than specified on retina displays.
-		SandBox::width = width;
-		SandBox::height = height;
-		SandBox::idViewPortChanged = true;
+		SandBoxGlobals::width = width;
+		SandBoxGlobals::height = height;
+		SandBoxGlobals::idViewPortChanged = true;
 		glViewport(0, 0, width, height);
 		});
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 10.0f));
-	unsigned int indices[] = {  // note that we start from 0!
-		0, 1, 3,
-		1, 2, 3,
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
-		4, 5, 7,
-		5, 6, 7,
+		lastX = xpos;
+		lastY = ypos;
 
-		8, 9, 11,
-		9, 10, 11,
-
-		12, 13, 15,
-		13, 14, 15,
-
-		16, 17, 19,
-		17, 18, 19,
-
-		20, 21, 23,
-		21, 22, 23
-	};
-
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	glBindVertexArray(VAO);
-
+		SandBoxGlobals::camera.ProcessMouseMovement(xoffset, yoffset);
+		});
+	glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
+		SandBoxGlobals::camera.Zoom -= (float)yoffset / 4;
+		if (SandBoxGlobals::camera.Zoom < 1.0f)
+			SandBoxGlobals::camera.Zoom = 1.0f;
+		if (SandBoxGlobals::camera.Zoom > 50.0f)
+			SandBoxGlobals::camera.Zoom = 50.0f;
+		SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
+		});
 
 	float* data = voxel.getVertexData();
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, 24 * 6 * sizeof(float), data, GL_DYNAMIC_DRAW);
-	//std::cout << "x: " << voxel.getVertexData()[0]<< "y: " << voxel.getVertexData()[1]<< "z: " << voxel.getVertexData()[2]<< "r: " << voxel.getVertexData()[3]<< "g: " << voxel.getVertexData()[4]<< "b: " << voxel.getVertexData()[5]<< "a: " << voxel.getVertexData()[6]<<std::endl;
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	// build and compile our shader program
 	// ------------------------------------
 	mainShader = new Shader("res/shaders/initial.vs.glsl", "res/shaders/initial.fs.glsl");
+	renderer = new Renderer(mainShader, data);
+	renderer->start();
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_ALWAYS);
-
-	projectionMatrix = glm::perspective(glm::radians(60.0f), (float)SandBox::width / (float)SandBox::height, 0.1f, 90.0f);
+	if (isProjectionInPerspective) {
+		projectionMatrix = glm::perspective(glm::radians(60.0f), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 90.0f);
+	}
+	else {
+		projectionMatrix = glm::ortho(
+			(float)SandBoxGlobals::width / -1.0f,
+			(float)SandBoxGlobals::height / 1.0f,
+			(float)SandBoxGlobals::width / -1.0f,
+			(float)SandBoxGlobals::height / 1.0f,
+			-10.0f,
+			10.0f
+		);
+	}
 
 	// note that we're translating the scene in the reverse direction of where we want to move
-	viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -10.0f));
+	viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
 
 	modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));
 	spdlog::info("Ronin running");
@@ -88,50 +77,56 @@ void SandBox::onAttach() {
 }
 
 void SandBox::onDetach() {
-	// optional: de-allocate all resources once they've outlived their purpose:
-	// ------------------------------------------------------------------------
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
+	delete renderer;
 }
 
 void SandBox::onUpdate(Timestep timeStep) {
-	if (SandBox::idViewPortChanged) {
+	if (SandBoxGlobals::idViewPortChanged) {
 		framebuffer_size_callback();
 	}
-	onEvent(window);
-	// render
-	// ------
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	// draw our first triangle
-	mainShader->bind();
-	mainShader->SetUniformsMat4f("projection", projectionMatrix);
-	mainShader->SetUniformsMat4f("view", camera.GetViewMatrix());
-	mainShader->SetUniformsMat4f("model", modelMatrix);
-	glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	// glBindVertexArray(0); // no need to unbind it every time
+	if (isViewInWireframe) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
+	onEvent(window, timeStep);
+
+	renderer->draw(projectionMatrix, modelMatrix);
 }
 
-void SandBox::onEvent(GLFWwindow* window) {
+void SandBox::onEvent(GLFWwindow* window, Timestep timeStep) {
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		SandBoxGlobals::camera.ProcessKeyboard(Camera_Movement::FORWARD, float(timeStep) * 10);
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		SandBoxGlobals::camera.ProcessKeyboard(Camera_Movement::LEFT, float(timeStep) * 10);
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		SandBoxGlobals::camera.ProcessKeyboard(Camera_Movement::RIGHT, float(timeStep) * 10);
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		SandBoxGlobals::camera.ProcessKeyboard(Camera_Movement::BACKWARD, float(timeStep) * 10);
+	}
+
+	// ! Close window and program
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void SandBox::onImGui(ImGuiIO& io, Timestep timeStep) {
 	ImGui::Begin("Ronin project");
 	ImGui::Text("Starter menu for Ronin project.");
 	ImGui::Text("Thesis project to obtain a computer engeneer degree.");
-	if (ImGui::ColorEdit4("clear color", voxel.getVoxelColor()))
+	if (ImGui::ColorEdit4("clear color", voxel.getVoxelColor())) {
 		updateBufferColor();
-	ImGui::Text(voxel.toString().c_str());
+	}
+
+	if (ImGui::Checkbox("Projection in perspective", &isProjectionInPerspective)) {
+		framebuffer_size_callback();
+	}
+	ImGui::Checkbox("Wireframe View", &isViewInWireframe);
 	ImGui::Text("Application \n average %.3f ms/frame \n(%.1f FPS)", timeStep.getMilliseconds(), io.Framerate);
 	ImGui::End();
 }
@@ -143,6 +138,22 @@ void SandBox::updateBufferColor() {
 }
 
 void SandBox::framebuffer_size_callback() {
-	SandBox::idViewPortChanged = false;
-	projectionMatrix = glm::perspective(glm::radians(60.0f), (float)SandBox::width / (float)SandBox::height, 0.1f, 90.0f);
+	SandBoxGlobals::idViewPortChanged = false;
+	if (isProjectionInPerspective) {
+		projectionMatrix = glm::perspective(glm::radians(60.0f), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 90.0f);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3((1 / 10.0f)));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));
+	}
+	else {
+		projectionMatrix = glm::ortho(
+			(float)SandBoxGlobals::width / -5.0f,
+			(float)SandBoxGlobals::height / 5.0f,
+			(float)SandBoxGlobals::width / -5.0f,
+			(float)SandBoxGlobals::height / 5.0f,
+			-100.0f,
+			100.0f
+		);
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f));
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(10.0f));
+	}
 }

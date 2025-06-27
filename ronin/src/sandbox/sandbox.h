@@ -11,31 +11,30 @@
 #include "shader/shader.h"
 #include "voxel/voxel.h"
 #include "sandbox/camera.h"
+#include "sandbox/renderer.h"
 
 class SandBox : public Layer {
+public:
+
 private:
-	// settings
-	static unsigned int width, height;
-	static bool idViewPortChanged;
 	Shader* mainShader;
+	Renderer* renderer;
+
 	glm::mat4 projectionMatrix = glm::mat4(1.0f);
-	//glm::mat4 projectionMatrix = glm::ortho(
-	//	(float)SCR_WIDTH / -2.0f,
-	//	(float)SCR_WIDTH / 2.0f,
-	//	(float)SCR_HEIGHT / -2.0f,
-	//	(float)SCR_HEIGHT / 2.0f,
-	//	-10.0f,
-	//	10.0f
-	//);
 	glm::mat4 viewMatrix = glm::mat4(1.0f);
-	Camera camera;
 	glm::mat4 modelMatrix = glm::mat4(1.0f);
-	unsigned int VBO, VAO, EBO;
+
+
 	bool firstMouse = true;
 	Timestep dt;
 
 	Voxel voxel;
 	GLFWwindow* window;
+
+	// ? Some settings for debug
+	bool isProjectionInPerspective = true;
+	bool isViewInWireframe = false;
+
 public:
 	SandBox();
 	SandBox(GLFWwindow* window);
@@ -43,7 +42,7 @@ public:
 	virtual void onAttach() override;
 	virtual void onDetach() override;
 	virtual void onUpdate(Timestep timeStep) override;
-	virtual void onEvent(GLFWwindow* window) override;
+	virtual void onEvent(GLFWwindow* window, Timestep timeStep) override;
 	virtual void onImGui(ImGuiIO& io, Timestep timeStep) override;
 
 	void updateBufferColor();
