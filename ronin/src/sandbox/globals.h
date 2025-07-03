@@ -8,4 +8,5 @@ public:
 	static Camera camera;
 	static unsigned int width, height;
 	static bool idViewPortChanged;
+	static bool isOnMenu;
 };

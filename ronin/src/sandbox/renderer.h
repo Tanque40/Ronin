@@ -2,17 +2,20 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
+#include "roninpch.h"
+
 #include "shader/shader.h"
 #include "sandbox/globals.h"
 
 class Renderer {
 private:
 	Shader* mainShader;
-	float* data;
+	std::vector<float>* data;
+	std::vector<unsigned int> indices;
 	unsigned int VBO, VAO, EBO;
 
 public:
-	Renderer(Shader* _mainShader, float* _data);
+	Renderer(Shader* _mainShader, std::vector<float>* _data);
 	~Renderer();
 
 	virtual void start();

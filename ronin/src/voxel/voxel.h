@@ -20,7 +20,7 @@ private:
 	glm::vec3 backTopLeftC, backTopRightC, backBottomLeftC, backBottomRightC;
 	glm::vec3 voxelOrigin; // ? By this moment backTopRightC
 	glm::vec4 color = { 0.5f, 0.5f, 1.0f, 1.0f }; // ? Default white
-	float vertex[144];
+	std::vector<float> vertex;
 
 public:
 	Voxel();
@@ -30,7 +30,7 @@ public:
 	float* getVoxelColor();
 	void setVoxelColor(glm::vec4 newColor);
 
-	float* getVertexData();
+	std::vector<float>* getVertexData();
 
 	std::string toString();
 };

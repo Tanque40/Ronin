@@ -46,7 +46,7 @@ void SandBox::onAttach() {
 		SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
 		});
 
-	float* data = voxel.getVertexData();
+	std::vector<float>* data = voxel.getVertexData();
 
 	// build and compile our shader program
 	// ------------------------------------
@@ -109,6 +109,37 @@ void SandBox::onEvent(GLFWwindow* window, Timestep timeStep) {
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 		SandBoxGlobals::camera.ProcessKeyboard(Camera_Movement::BACKWARD, float(timeStep) * 10);
 	}
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+		if (SandBoxGlobals::isOnMenu) {
+			SandBoxGlobals::isOnMenu = false;
+
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+				float xoffset = xpos - lastX;
+				float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+				lastX = xpos;
+				lastY = ypos;
+
+				SandBoxGlobals::camera.ProcessMouseMovement(xoffset, yoffset);
+				});
+			glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
+				// do nothing
+				SandBoxGlobals::camera.Zoom -= (float)yoffset / 4;
+				if (SandBoxGlobals::camera.Zoom < 1.0f)
+					SandBoxGlobals::camera.Zoom = 1.0f;
+				if (SandBoxGlobals::camera.Zoom > 50.0f)
+					SandBoxGlobals::camera.Zoom = 50.0f;
+				SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
+				});
+		}
+		else {
+			SandBoxGlobals::isOnMenu = true;
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetCursorPosCallback(window, nullptr);
+			glfwSetScrollCallback(window, nullptr);
+		}
+	}
 
 	// ! Close window and program
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -132,9 +163,9 @@ void SandBox::onImGui(ImGuiIO& io, Timestep timeStep) {
 }
 
 void SandBox::updateBufferColor() {
-	float* data = voxel.getVertexData();
+	std::vector<float>* data = voxel.getVertexData();
 
-	glBufferData(GL_ARRAY_BUFFER, 24 * 6 * sizeof(float), data, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, data->size(), data->data(), GL_DYNAMIC_DRAW);
 }
 
 void SandBox::framebuffer_size_callback() {
