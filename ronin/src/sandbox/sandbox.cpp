@@ -7,8 +7,8 @@
 
 #include "sandbox/globals.h"
 
-float lastX = 1920 / 2.0f;
-float lastY = 1080 / 2.0f;
+float lastX = SandBoxGlobals::width / 2.0f;
+float lastY = SandBoxGlobals::height / 2.0f;
 
 SandBox::SandBox() {}
 
@@ -19,6 +19,8 @@ SandBox::~SandBox() {
 }
 
 void SandBox::onAttach() {
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
 		// make sure the viewport matches the new window dimensions; note that width and
 		// height will be significantly larger than specified on retina displays.
@@ -46,7 +48,9 @@ void SandBox::onAttach() {
 		SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
 		});
 
-	std::vector<float>* data = voxel.getVertexData();
+
+	chunk.generateChunk();
+	std::vector<float>* data = chunk.getData();
 
 	// build and compile our shader program
 	// ------------------------------------
@@ -55,7 +59,7 @@ void SandBox::onAttach() {
 	renderer->start();
 
 	if (isProjectionInPerspective) {
-		projectionMatrix = glm::perspective(glm::radians(60.0f), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 90.0f);
+		projectionMatrix = glm::perspective(glm::radians(45.0f), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 100.0f);
 	}
 	else {
 		projectionMatrix = glm::ortho(
@@ -71,9 +75,10 @@ void SandBox::onAttach() {
 	// note that we're translating the scene in the reverse direction of where we want to move
 	viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
 
-	modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));
+	//modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
 	spdlog::info("Ronin running");
 
+	spdlog::info("Voxels matrix: {}", chunk.toString(false));
 }
 
 void SandBox::onDetach() {
@@ -150,9 +155,9 @@ void SandBox::onImGui(ImGuiIO& io, Timestep timeStep) {
 	ImGui::Begin("Ronin project");
 	ImGui::Text("Starter menu for Ronin project.");
 	ImGui::Text("Thesis project to obtain a computer engeneer degree.");
-	if (ImGui::ColorEdit4("clear color", voxel.getVoxelColor())) {
+	/* if (ImGui::ColorEdit4("clear color", voxel.getVoxelColor())) {
 		updateBufferColor();
-	}
+	} */
 
 	if (ImGui::Checkbox("Projection in perspective", &isProjectionInPerspective)) {
 		framebuffer_size_callback();
@@ -162,11 +167,11 @@ void SandBox::onImGui(ImGuiIO& io, Timestep timeStep) {
 	ImGui::End();
 }
 
-void SandBox::updateBufferColor() {
+/* void SandBox::updateBufferColor() {
 	std::vector<float>* data = voxel.getVertexData();
 
-	glBufferData(GL_ARRAY_BUFFER, data->size(), data->data(), GL_DYNAMIC_DRAW);
-}
+	glBufferData(GL_ARRAY_BUFFER, data->size() * sizeof(float), data->data(), GL_DYNAMIC_DRAW);
+} */
 
 void SandBox::framebuffer_size_callback() {
 	SandBoxGlobals::idViewPortChanged = false;

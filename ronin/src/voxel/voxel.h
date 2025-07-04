@@ -19,12 +19,13 @@ private:
 	glm::vec3 frontTopLeftC, frontTopRightC, frontBottomLeftC, frontBottomRightC;
 	glm::vec3 backTopLeftC, backTopRightC, backBottomLeftC, backBottomRightC;
 	glm::vec3 voxelOrigin; // ? By this moment backTopRightC
-	glm::vec4 color = { 0.5f, 0.5f, 1.0f, 1.0f }; // ? Default white
+	glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; // ? Default white
 	std::vector<float> vertex;
 
 public:
 	Voxel();
 	Voxel(glm::vec3 voxelOrigin);
+	Voxel(glm::vec3 _voxelOrigin, glm::vec4 _color);
 	~Voxel();
 
 	float* getVoxelColor();

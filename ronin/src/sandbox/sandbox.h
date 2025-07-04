@@ -4,12 +4,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <spdlog/spdlog.h>
 
 #include "core/layer.h"
 #include "core/timestep.h"
 #include "shader/shader.h"
-#include "voxel/voxel.h"
+#include "voxel/chunck.h"
 #include "sandbox/camera.h"
 #include "sandbox/renderer.h"
 
@@ -28,7 +27,7 @@ private:
 	bool firstMouse = true;
 	Timestep dt;
 
-	Voxel voxel;
+	Chunk chunk;
 	GLFWwindow* window;
 
 	// ? Some settings for debug
