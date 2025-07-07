@@ -8,7 +8,7 @@ Chunk::Chunk() {
 Chunk::~Chunk() {
 }
 
-int sideCount = 50; // Number of voxels per side in the chunk
+int sideCount = 20; // Number of voxels per side in the chunk
 
 void Chunk::generateChunk() {
 	voxels.clear();
