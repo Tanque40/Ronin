@@ -2,7 +2,6 @@
 #include "roninpch.h"
 
 #include <imgui.h>
-#include <GLFW/glfw3.h>
 
 #include "core/timestep.h"
 

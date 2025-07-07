@@ -1,6 +1,6 @@
-#include "shader/shader.h"
+#include "roninpch.h"
 
-#include <GL/glew.h>
+#include "shader/shader.h"
 
 Shader::Shader(const std::string& vertexFilePath, const std::string& fragmentFilePath) : rendererId(0) {
 	ShaderProgramSource source = { parseShader(vertexFilePath), parseShader(fragmentFilePath), "" };

@@ -1,5 +1,4 @@
 workspace 'Ronin'
-architecture 'ARM64'
 
 configurations {
 	'Debug',
@@ -11,6 +10,7 @@ OutputDir = '%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}'
 -- ! Include directories relative to root folder
 includeDir = {}
 includeDir['GLEW'] = 'ronin/vendor/repos/GLEW/include'
+includeDir['GLAD'] = 'ronin/vendor/repos/GLAD/include'
 includeDir["GLFW"] = "ronin/vendor/repos/GLFW/include"
 includeDir["GLM"] = "ronin/vendor/repos/GLM/"
 includeDir["IMGUI"] = "ronin/vendor/repos/ImGUI/"
@@ -53,6 +53,9 @@ includedirs {
 	"%{includeDir.SPDLOG}",
 }
 
+filter "system:macosx"
+architecture 'ARM64'
+systemversion "latest"
 links {
 	"GLFW",
 	"GLEW",
@@ -61,6 +64,31 @@ links {
 	"OpenGL.framework",
 	"IOKit.framework",
 }
+
+filter "system:windows"
+architecture 'x86_64'
+systemversion "latest"
+includedirs {
+	"%{prj.location}/src/",
+	"%{includeDir.GLFW}",
+	"%{includeDir.GLAD}",
+	"%{includeDir.GLM}",
+	"%{includeDir.IMGUI}",
+	"%{includeDir.SPDLOG}",
+}
+links {
+	"GLFW",
+	"GLAD",
+	"IMGUI",
+	"opengl32.lib",
+}
+defines {
+	"_CRT_SECURE_NO_WARNINGS",
+	"_GLFW_WIN32",
+	"GLFW_INCLUDE_NONE",
+}
+buildoptions { "/utf-8" }
+include "ronin/vendor/repos/GLAD"
 
 filter "configurations:Debug"
 runtime "Debug"

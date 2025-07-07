@@ -1,3 +1,5 @@
+#include "roninpch.h"
+
 #include "voxel/chunck.h"
 
 Chunk::Chunk() {

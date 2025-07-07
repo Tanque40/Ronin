@@ -1,3 +1,5 @@
+#include "roninpch.h"
+
 #include "sandbox/globals.h"
 
 unsigned int SandBoxGlobals::width = 1080, SandBoxGlobals::height = 720;

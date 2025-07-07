@@ -1,8 +1,7 @@
 #pragma once
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-
 #include "roninpch.h"
+
+#include <glm/glm.hpp>
 
 #include "shader/shader.h"
 #include "sandbox/globals.h"

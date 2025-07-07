@@ -1,3 +1,5 @@
+#include "roninpch.h"
+
 #include "sandbox/renderer.h"
 
 Renderer::Renderer(Shader* _mainShader, std::vector<float>* _data) : mainShader(_mainShader), data(_data) {

@@ -3,11 +3,15 @@
 #include "roninpch.h"
 
 #include <imgui.h>
+#ifdef __APPLE__
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
+#endif
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#ifdef _WIN32
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#endif
 
 #include "sandbox/sandbox.h"
 #include "core/timestep.h"
@@ -26,8 +30,8 @@ public:
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
-#ifdef __APPLE__
 		const char* glsl_version = "#version 150";
+#ifdef __APPLE__
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 		// glfw window creation
@@ -41,7 +45,7 @@ public:
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 
-
+	#ifdef __APPLE__
 		// glew: load all OpenGL function pointers
 		// ---------------------------------------
 		GLenum err = glewInit();
@@ -50,6 +54,14 @@ public:
 			glfwTerminate();
 			return -1;
 		}
+	#endif
+
+	#ifdef _WIN32
+		if( !gladLoadGLLoader( ( GLADloadproc ) glfwGetProcAddress ) ) {
+			std::cout << "Failed to initialize GLAD" << std::endl;
+			return -1;
+		}
+	#endif
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
