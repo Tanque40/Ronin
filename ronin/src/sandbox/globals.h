@@ -9,4 +9,5 @@ public:
 	static unsigned int width, height;
 	static bool idViewPortChanged;
 	static bool isOnMenu;
+	static bool fistMouse;
 };

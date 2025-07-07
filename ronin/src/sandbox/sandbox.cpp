@@ -19,6 +19,7 @@ SandBox::~SandBox() {
 }
 
 void SandBox::onAttach() {
+	spdlog::info("SandBox running");
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
@@ -31,6 +32,11 @@ void SandBox::onAttach() {
 		});
 
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+		if (SandBoxGlobals::fistMouse) {
+			lastX = xpos;
+			lastY = ypos;
+			SandBoxGlobals::fistMouse = false;
+		}
 		float xoffset = xpos - lastX;
 		float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
@@ -40,11 +46,7 @@ void SandBox::onAttach() {
 		SandBoxGlobals::camera.ProcessMouseMovement(xoffset, yoffset);
 		});
 	glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
-		SandBoxGlobals::camera.Zoom -= (float)yoffset / 4;
-		if (SandBoxGlobals::camera.Zoom < 1.0f)
-			SandBoxGlobals::camera.Zoom = 1.0f;
-		if (SandBoxGlobals::camera.Zoom > 50.0f)
-			SandBoxGlobals::camera.Zoom = 50.0f;
+		spdlog::info("Mouse scroll: xoffset: {}, yoffset: {}", xoffset, yoffset);
 		SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
 		});
 
@@ -59,7 +61,7 @@ void SandBox::onAttach() {
 	renderer->start();
 
 	if (isProjectionInPerspective) {
-		projectionMatrix = glm::perspective(glm::radians(45.0f), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 100.0f);
+		projectionMatrix = glm::perspective(glm::radians(SandBoxGlobals::camera.Zoom), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 100.0f);
 	}
 	else {
 		projectionMatrix = glm::ortho(
@@ -72,11 +74,7 @@ void SandBox::onAttach() {
 		);
 	}
 
-	// note that we're translating the scene in the reverse direction of where we want to move
-	viewMatrix = glm::translate(viewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
-
 	//modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
-	spdlog::info("Ronin running");
 
 	spdlog::info("Voxels matrix: {}", chunk.toString(false));
 }
@@ -95,6 +93,7 @@ void SandBox::onUpdate(Timestep timeStep) {
 	else {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+	projectionMatrix = glm::perspective(glm::radians(SandBoxGlobals::camera.Zoom), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 100.0f);
 
 	onEvent(window, timeStep);
 
@@ -119,7 +118,13 @@ void SandBox::onEvent(GLFWwindow* window, Timestep timeStep) {
 			SandBoxGlobals::isOnMenu = false;
 
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			SandBoxGlobals::fistMouse = true; // reset first mouse movement flag
 			glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+				if (SandBoxGlobals::fistMouse) {
+					lastX = xpos;
+					lastY = ypos;
+					SandBoxGlobals::fistMouse = false;
+				}
 				float xoffset = xpos - lastX;
 				float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
@@ -129,12 +134,6 @@ void SandBox::onEvent(GLFWwindow* window, Timestep timeStep) {
 				SandBoxGlobals::camera.ProcessMouseMovement(xoffset, yoffset);
 				});
 			glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
-				// do nothing
-				SandBoxGlobals::camera.Zoom -= (float)yoffset / 4;
-				if (SandBoxGlobals::camera.Zoom < 1.0f)
-					SandBoxGlobals::camera.Zoom = 1.0f;
-				if (SandBoxGlobals::camera.Zoom > 50.0f)
-					SandBoxGlobals::camera.Zoom = 50.0f;
 				SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
 				});
 		}
@@ -153,17 +152,16 @@ void SandBox::onEvent(GLFWwindow* window, Timestep timeStep) {
 
 void SandBox::onImGui(ImGuiIO& io, Timestep timeStep) {
 	ImGui::Begin("Ronin project");
-	ImGui::Text("Starter menu for Ronin project.");
-	ImGui::Text("Thesis project to obtain a computer engeneer degree.");
-	/* if (ImGui::ColorEdit4("clear color", voxel.getVoxelColor())) {
-		updateBufferColor();
-	} */
+	{
+		ImGui::Text("Starter menu for Ronin project.");
+		ImGui::Text("Thesis project to obtain a computer engeneer degree.");
+		/* if (ImGui::ColorEdit4("clear color", voxel.getVoxelColor())) {
+			updateBufferColor();
+		} */
 
-	if (ImGui::Checkbox("Projection in perspective", &isProjectionInPerspective)) {
-		framebuffer_size_callback();
+		ImGui::Checkbox("Wireframe View", &isViewInWireframe);
+		ImGui::Text("Application \n average %.3f ms/frame \n(%.1f FPS)", timeStep.getMilliseconds(), io.Framerate);
 	}
-	ImGui::Checkbox("Wireframe View", &isViewInWireframe);
-	ImGui::Text("Application \n average %.3f ms/frame \n(%.1f FPS)", timeStep.getMilliseconds(), io.Framerate);
 	ImGui::End();
 }
 
@@ -175,21 +173,5 @@ void SandBox::onImGui(ImGuiIO& io, Timestep timeStep) {
 
 void SandBox::framebuffer_size_callback() {
 	SandBoxGlobals::idViewPortChanged = false;
-	if (isProjectionInPerspective) {
-		projectionMatrix = glm::perspective(glm::radians(60.0f), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 90.0f);
-		modelMatrix = glm::scale(modelMatrix, glm::vec3((1 / 10.0f)));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f));
-	}
-	else {
-		projectionMatrix = glm::ortho(
-			(float)SandBoxGlobals::width / -5.0f,
-			(float)SandBoxGlobals::height / 5.0f,
-			(float)SandBoxGlobals::width / -5.0f,
-			(float)SandBoxGlobals::height / 5.0f,
-			-100.0f,
-			100.0f
-		);
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(2.0f));
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(10.0f));
-	}
+	projectionMatrix = glm::perspective(glm::radians(SandBoxGlobals::camera.Zoom), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 100.0f);
 }

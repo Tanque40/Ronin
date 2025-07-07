@@ -51,8 +51,6 @@ public:
 			return -1;
 		}
 
-		SandBox sandBox(window);
-
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -68,12 +66,15 @@ public:
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
-		sandBox.onAttach();
 		float time = glfwGetTime(), lastFrameTime = glfwGetTime();
 		Timestep timestep = time - lastFrameTime;
 		lastFrameTime = time;
 		// render loop
 		// -----------
+		spdlog::info("Ronin running");
+		SandBox sandBox(window);
+		sandBox.onAttach();
+
 		while (!glfwWindowShouldClose(window)) {
 			time = glfwGetTime();
 			timestep = time - lastFrameTime;
