@@ -55,7 +55,9 @@ includedirs {
 
 filter "system:macosx"
 architecture 'ARM64'
-systemversion "latest"
+libdirs {
+	"/usr/local/lib/"
+}
 links {
 	"GLFW",
 	"GLEW",
