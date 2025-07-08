@@ -26,7 +26,7 @@ void Renderer::start() {
 		indices.push_back(3 + (4 * i / 6));
 	}
 
-	/* spdlog::info("Renderer started with {} vertices and {} indices", data->size() / 7, indices.size());
+	/*spdlog::info("Renderer started with {} vertices and {} indices", data->size() / 7, indices.size());
 	spdlog::info("indices: ");
 	for (size_t i = 0; i < indices.size(); i += 6) {
 		spdlog::info(
@@ -34,7 +34,7 @@ void Renderer::start() {
 			i / 6,
 			indices[i], indices[i + 1], indices[i + 2],
 			indices[i + 3], indices[i + 4], indices[i + 5]);
-	} */
+	}*/
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);

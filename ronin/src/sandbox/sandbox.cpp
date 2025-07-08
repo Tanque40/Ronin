@@ -115,6 +115,11 @@ void SandBox::onEvent(GLFWwindow* window, Timestep timeStep) {
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 		SandBoxGlobals::camera.ProcessKeyboard(Camera_Movement::BACKWARD, float(timeStep) * 10);
 	}
+
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
 		if (SandBoxGlobals::isOnMenu) {
 			SandBoxGlobals::isOnMenu = false;
