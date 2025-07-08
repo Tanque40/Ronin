@@ -2,7 +2,7 @@
 
 cd vendor/repos/premake
 make -f Bootstrap.mak macosx-clean
-make -f Bootstrap.mak osx
+make -f Bootstrap.mak macosx
 cd ../../../
 
 # Prepare GLEW
