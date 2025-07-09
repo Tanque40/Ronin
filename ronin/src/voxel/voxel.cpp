@@ -90,6 +90,7 @@ std::vector<float>* Voxel::getVertexData() {
 		vertex.push_back(color.g);
 		vertex.push_back(color.b);
 		vertex.push_back(color.a);
+		quadCount++;
 	}
 
 	// * Check left side
@@ -123,6 +124,7 @@ std::vector<float>* Voxel::getVertexData() {
 		vertex.push_back(color.g);
 		vertex.push_back(color.b);
 		vertex.push_back(color.a);
+		quadCount++;
 	}
 
 	// * Check bottom side
@@ -156,6 +158,7 @@ std::vector<float>* Voxel::getVertexData() {
 		vertex.push_back(color.g);
 		vertex.push_back(color.b);
 		vertex.push_back(color.a);
+		quadCount++;
 	}
 
 	// * Check right side
@@ -189,6 +192,7 @@ std::vector<float>* Voxel::getVertexData() {
 		vertex.push_back(color.g);
 		vertex.push_back(color.b);
 		vertex.push_back(color.a);
+		quadCount++;
 	}
 
 	// * Check top side
@@ -222,6 +226,7 @@ std::vector<float>* Voxel::getVertexData() {
 		vertex.push_back(color.g);
 		vertex.push_back(color.b);
 		vertex.push_back(color.a);
+		quadCount++;
 	}
 
 	// * Check front side
@@ -255,6 +260,7 @@ std::vector<float>* Voxel::getVertexData() {
 		vertex.push_back(color.g);
 		vertex.push_back(color.b);
 		vertex.push_back(color.a);
+		quadCount++;
 	}
 
 
@@ -274,6 +280,7 @@ std::string Voxel::toString() {
 	voxelData += " g:" + std::to_string(color.g);
 	voxelData += " b:" + std::to_string(color.b);
 	voxelData += " a:" + std::to_string(color.a);
+	voxelData += "\n\tQuad Count: " + std::to_string(quadCount);
 
 	return voxelData;
 }

@@ -8,7 +8,7 @@ Chunk::Chunk() {
 Chunk::~Chunk() {
 }
 
-int sideCount = 10; // Number of voxels per side in the chunk
+int sideCount = 100; // Number of voxels per side in the chunk
 
 void Chunk::generateChunk() {
 	voxels.clear();
@@ -27,8 +27,8 @@ void Chunk::generateChunk() {
 				);
 				voxels.emplace_back(voxelOrigin, voxelColor, 1);
 				voxelCount++;
-				quadCount += 6; // Each voxel contributes 6 quads
-				triangleCount += 12; // Each voxel contributes 12 triangles
+				quadCount += voxels.back().getQuadCount(); // Update the quad count for the voxel
+				triangleCount += voxels.back().getQuadCount() * 2; // Each quad has 2 triangles
 			}
 		}
 	}
