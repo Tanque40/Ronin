@@ -53,6 +53,7 @@ void SandBox::onAttach() {
 		});
 
 
+	chunk = Chunk(100);
 	chunk.generateChunk();
 	std::vector<float>* data = chunk.getData();
 
@@ -78,7 +79,7 @@ void SandBox::onAttach() {
 
 	//modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
 
-	spdlog::info("Voxels matrix:\n{}", chunk.toString(false));
+	spdlog::info("Voxels matrix:\n{}", chunk.toString());
 }
 
 void SandBox::onDetach() {

@@ -60,6 +60,12 @@ void Voxel::setVoxelColor(glm::vec4 newColor) {
 std::vector<float>* Voxel::getVertexData() {
 	vertex.clear();
 
+	if (!isActive) {
+		return &vertex; // * If the voxel is not active, return an empty vertex vector
+	}
+
+	u_int8_t voxelSides = this->voxelSides;
+
 	// * Check back side
 	if (voxelSides & 1) {
 		vertex.push_back(voxelOrigin.x);

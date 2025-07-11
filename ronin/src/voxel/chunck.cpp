@@ -2,13 +2,11 @@
 
 #include "voxel/chunck.h"
 
-Chunk::Chunk() {
+Chunk::Chunk(unsigned int _sideCount) : sideCount(_sideCount) {
 }
 
 Chunk::~Chunk() {
 }
-
-int sideCount = 100; // Number of voxels per side in the chunk
 
 void Chunk::generateChunk() {
 	voxels.clear();
@@ -16,7 +14,9 @@ void Chunk::generateChunk() {
 
 	// Generate a 10x10x10 chunk of voxels
 	for (int x = 0; x < sideCount; x += 1) {
+		std::vector<std::vector<Voxel>> voxelRow;
 		for (int y = 0; y < sideCount; y += 1) {
+			std::vector<Voxel> voxelColumn;
 			for (int z = 0; z < sideCount; z += 1) {
 				glm::vec3 voxelOrigin(x, y, z);
 				glm::vec4 voxelColor(
@@ -25,20 +25,29 @@ void Chunk::generateChunk() {
 					static_cast<float>(rand() % 255) / 255.0f,
 					1.0f // Alpha channel
 				);
-				voxels.emplace_back(voxelOrigin, voxelColor, 1);
+				voxelColumn.push_back(Voxel(voxelOrigin, voxelColor, 1));
 				voxelCount++;
-				quadCount += voxels.back().getQuadCount(); // Update the quad count for the voxel
-				triangleCount += voxels.back().getQuadCount() * 2; // Each quad has 2 triangles
+				quadCount += voxelColumn.back().getQuadCount(); // Update the quad count for the voxel
+				triangleCount += voxelColumn.back().getQuadCount() * 2; // Each quad has 2 triangles
 			}
+			voxelRow.push_back(voxelColumn);
 		}
+		voxels.push_back(voxelRow);
 	}
+
+	// * Check faces to show
+
 }
 
 std::vector<float>* Chunk::getData() {
 	data.clear();
-	for (auto& voxel : voxels) {
-		std::vector<float>* voxelData = voxel.getVertexData();
-		data.insert(data.end(), voxelData->begin(), voxelData->end());
+	for (auto& voxelRow : voxels) {
+		for (auto& voxelColumn : voxelRow) {
+			for (auto& voxel : voxelColumn) {
+				std::vector<float>* voxelData = voxel.getVertexData();
+				data.insert(data.end(), voxelData->begin(), voxelData->end());
+			}
+		}
 	}
 
 	return &data;
@@ -52,8 +61,12 @@ std::string Chunk::toString(bool showEachVoxelData) {
 
 	if (showEachVoxelData) {
 		chunkData += "Voxels data:\n";
-		for (auto& voxel : voxels) {
-			chunkData += voxel.toString() + "\n";
+		for (auto& voxelRow : voxels) {
+			for (auto& voxelColumn : voxelRow) {
+				for (auto& voxel : voxelColumn) {
+					chunkData += voxel.toString() + "\n";
+				}
+			}
 		}
 	}
 

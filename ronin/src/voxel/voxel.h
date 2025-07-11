@@ -23,6 +23,7 @@ private:
 	glm::vec3 voxelOrigin; // * By this moment backBottomLeftC is the origin of the voxel
 	glm::vec4 color; // * Default white
 	std::vector<float> vertex;
+	bool isActive = true; // * If the voxel is active or not
 
 	/*
 	 * I will use a bits as a reference to the show / dont show sides of the voxel.
@@ -45,7 +46,11 @@ public:
 	Voxel(glm::vec3 voxelOrigin);
 	Voxel(glm::vec3 _voxelOrigin = { 0.0f, 0.0f, 0.0f }, glm::vec4 _color = { 1.0f, 1.0f, 1.0f, 1.0f });
 	Voxel(glm::vec3 _voxelOrigin = { 0.0f, 0.0f, 0.0f }, glm::vec4 _color = { 1.0f, 1.0f, 1.0f, 1.0f }, u_int8_t _voxelSides = 63);
+
 	~Voxel();
+
+	bool isVoxelActive() const { return isActive; }
+	void setVoxelActive(bool active) { isActive = active; }
 
 	u_int8_t getQuadCount() const { return quadCount; }
 	float* getVoxelColor();
