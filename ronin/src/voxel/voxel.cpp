@@ -32,7 +32,7 @@ Voxel::Voxel(glm::vec3 _voxelOrigin, glm::vec4 _color) : voxelOrigin(_voxelOrigi
 	frontBottomRightC = { voxelOrigin.x , voxelOrigin.y - 1.0f, voxelOrigin.z - 1.0f }; */
 }
 
-Voxel::Voxel(glm::vec3 _voxelOrigin, glm::vec4 _color, u_int8_t _voxelSides)
+Voxel::Voxel(glm::vec3 _voxelOrigin, glm::vec4 _color, uint8_t _voxelSides)
 	: voxelOrigin(_voxelOrigin), color(_color), voxelSides(_voxelSides) {
 }
 
@@ -64,7 +64,7 @@ std::vector<float>* Voxel::getVertexData() {
 		return &vertex; // * If the voxel is not active, return an empty vertex vector
 	}
 
-	u_int8_t voxelSides = this->voxelSides;
+	uint8_t voxelSides = this->voxelSides;
 
 	// * Check back side
 	if (voxelSides & 1) {

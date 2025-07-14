@@ -38,21 +38,21 @@ private:
 	 * For example:
 	 * 63 => 111111 -> Show all sides
 	 */
-	u_int8_t voxelSides; // * Each voxel has 6 sides (quads)
-	u_int8_t quadCount; // * Each voxel has 6 quads
+	uint8_t voxelSides; // * Each voxel has 6 sides (quads)
+	uint8_t quadCount; // * Each voxel has 6 quads
 
 public:
 	Voxel();
 	Voxel(glm::vec3 voxelOrigin);
 	Voxel(glm::vec3 _voxelOrigin = { 0.0f, 0.0f, 0.0f }, glm::vec4 _color = { 1.0f, 1.0f, 1.0f, 1.0f });
-	Voxel(glm::vec3 _voxelOrigin = { 0.0f, 0.0f, 0.0f }, glm::vec4 _color = { 1.0f, 1.0f, 1.0f, 1.0f }, u_int8_t _voxelSides = 63);
+	Voxel(glm::vec3 _voxelOrigin = { 0.0f, 0.0f, 0.0f }, glm::vec4 _color = { 1.0f, 1.0f, 1.0f, 1.0f }, uint8_t _voxelSides = 63);
 
 	~Voxel();
 
 	bool isVoxelActive() const { return isActive; }
 	void setVoxelActive(bool active) { isActive = active; }
 
-	u_int8_t getQuadCount() const { return quadCount; }
+	uint8_t getQuadCount() const { return quadCount; }
 	float* getVoxelColor();
 	void setVoxelColor(glm::vec4 newColor);
 

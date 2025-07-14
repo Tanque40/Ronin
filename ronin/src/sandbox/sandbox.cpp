@@ -53,7 +53,7 @@ void SandBox::onAttach() {
 		});
 
 
-	chunk = Chunk(100);
+	chunk = Chunk(10);
 	chunk.generateChunk();
 	std::vector<float>* data = chunk.getData();
 

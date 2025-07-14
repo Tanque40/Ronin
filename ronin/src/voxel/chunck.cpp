@@ -13,11 +13,11 @@ void Chunk::generateChunk() {
 	data.clear();
 
 	// Generate a 10x10x10 chunk of voxels
-	for (int x = 0; x < sideCount; x += 1) {
+	for (unsigned int x = 0; x < sideCount; x += 1) {
 		std::vector<std::vector<Voxel>> voxelRow;
-		for (int y = 0; y < sideCount; y += 1) {
+		for (unsigned int y = 0; y < sideCount; y += 1) {
 			std::vector<Voxel> voxelColumn;
-			for (int z = 0; z < sideCount; z += 1) {
+			for (unsigned int z = 0; z < sideCount; z += 1) {
 				glm::vec3 voxelOrigin(x, y, z);
 				glm::vec4 voxelColor(
 					static_cast<float>(rand() % 255) / 255.0f,
