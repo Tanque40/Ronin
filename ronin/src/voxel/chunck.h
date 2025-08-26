@@ -26,8 +26,4 @@ public:
 	std::string toString(bool showEachVoxelData = false);
 
 private:
-	// TODO decide the logic to determine if a face should be shown
-	void checkFacesToShow();
-
-	bool shouldShowFace(Voxel* origin, Voxel* neighbor, u_int8_t faceBit);
 };

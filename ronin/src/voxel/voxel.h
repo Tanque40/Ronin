@@ -33,13 +33,13 @@ private:
 	 *  4 => 000100 -> Show bottom
 	 *  8 => 001000 -> Show rightSide
 	 * 16 => 010000 -> Show top
-	 * 32 => 100000 -> Show front
+	 * 32 => 100000 -> Show front 010010
 	 * and any combination of these bits will show the respective sides.
 	 * For example:
 	 * 63 => 111111 -> Show all sides
 	 */
 	u_int8_t voxelSides; // * Each voxel has 6 sides (quads)
-	u_int8_t quadCount; // * Each voxel has 6 quads
+	u_int8_t quadCount = 0; // * Each voxel has 6 quads
 
 public:
 	Voxel();

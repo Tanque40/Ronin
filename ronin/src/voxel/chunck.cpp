@@ -1,5 +1,7 @@
 #include "roninpch.h"
 
+#include "math.h"
+
 #include "voxel/chunck.h"
 
 Chunk::Chunk(unsigned int _sideCount) : sideCount(_sideCount) {
@@ -12,30 +14,32 @@ void Chunk::generateChunk() {
 	voxels.clear();
 	data.clear();
 
-	// Generate a 10x10x10 chunk of voxels
-	for (int x = 0; x < sideCount; x += 1) {
+	int sideCount = (int)this->sideCount;
+	// Generate a sideCount x sideCount x sideCount chunk of voxels
+	for (int x = -sideCount / 2; x < sideCount / 2; x++) {
 		std::vector<std::vector<Voxel>> voxelRow;
-		for (int y = 0; y < sideCount; y += 1) {
+		for (int y = -sideCount / 2; y < sideCount / 2; y++) {
 			std::vector<Voxel> voxelColumn;
-			for (int z = 0; z < sideCount; z += 1) {
-				glm::vec3 voxelOrigin(x, y, z);
-				glm::vec4 voxelColor(
-					static_cast<float>(rand() % 255) / 255.0f,
-					static_cast<float>(rand() % 255) / 255.0f,
-					static_cast<float>(rand() % 255) / 255.0f,
-					1.0f // Alpha channel
-				);
-				voxelColumn.push_back(Voxel(voxelOrigin, voxelColor, 1));
-				voxelCount++;
-				quadCount += voxelColumn.back().getQuadCount(); // Update the quad count for the voxel
-				triangleCount += voxelColumn.back().getQuadCount() * 2; // Each quad has 2 triangles
+			for (int z = -sideCount / 2; z < sideCount / 2; z++) {
+				if (sqrt(pow(z, 2) + pow(x, 2) + pow(y, 2)) < (sideCount / 2)) {
+					glm::vec3 voxelOrigin(x, y, z);
+					glm::vec4 voxelColor(
+						static_cast<float>(rand() % 255) / 255.0f,
+						static_cast<float>(rand() % 255) / 255.0f,
+						static_cast<float>(rand() % 255) / 255.0f,
+						1.0f // Alpha channel
+					);
+
+					voxelColumn.push_back(Voxel(voxelOrigin, voxelColor, 63));
+					voxelCount++;
+					quadCount += voxelColumn.back().getQuadCount(); // Update the quad count for the voxel
+					triangleCount += voxelColumn.back().getQuadCount() * 2; // Each quad has 2 triangles
+				}
 			}
 			voxelRow.push_back(voxelColumn);
 		}
 		voxels.push_back(voxelRow);
 	}
-
-	// * Check faces to show
 
 }
 
