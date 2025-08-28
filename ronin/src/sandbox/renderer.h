@@ -5,16 +5,17 @@
 
 #include "shader/shader.h"
 #include "sandbox/globals.h"
+#include "core/openGL/vertex-buffer.h"
 
 class Renderer {
 private:
 	Shader* mainShader;
-	std::vector<float>* data;
+	VertexBuffer* vb;
 	std::vector<unsigned int> indices;
-	unsigned int VBO, VAO, EBO;
+	unsigned int VAO, EBO;
 
 public:
-	Renderer(Shader* _mainShader, std::vector<float>* _data);
+	Renderer(VertexBuffer* _vb, Shader* _mainShader);
 	~Renderer();
 
 	virtual void start();

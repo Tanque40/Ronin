@@ -53,14 +53,16 @@ void SandBox::onAttach() {
 		});
 
 
-	chunk = Chunk(150);
+	chunk = Chunk(25);
 	chunk.generateChunk();
 	std::vector<float>* data = chunk.getData();
+	vb = new VertexBuffer();
+	vb->setData(data->data(), data->size() * sizeof(float));
 
 	// build and compile our shader program
 	// ------------------------------------
 	mainShader = new Shader("res/shaders/initial.vs.glsl", "res/shaders/initial.fs.glsl");
-	renderer = new Renderer(mainShader, data);
+	renderer = new Renderer(vb, mainShader);
 	renderer->start();
 
 	if (isProjectionInPerspective) {

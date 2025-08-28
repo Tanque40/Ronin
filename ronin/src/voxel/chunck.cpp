@@ -29,7 +29,6 @@ void Chunk::generateChunk() {
 						static_cast<float>(rand() % 255) / 255.0f,
 						1.0f // Alpha channel
 					);
-
 					voxelColumn.push_back(Voxel(voxelOrigin, voxelColor, 63));
 					voxelCount++;
 					quadCount += voxelColumn.back().getQuadCount(); // Update the quad count for the voxel

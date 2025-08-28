@@ -2,7 +2,7 @@
 
 #include "sandbox/renderer.h"
 
-Renderer::Renderer(Shader* _mainShader, std::vector<float>* _data) : mainShader(_mainShader), data(_data) {
+Renderer::Renderer(VertexBuffer* _vb, Shader* _mainShader) : mainShader(_mainShader), vb(_vb) {
 
 }
 
@@ -10,13 +10,12 @@ Renderer::~Renderer() {
 	// optional: de-allocate all resources once they've outlived their purpose:
 		// ------------------------------------------------------------------------
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
 }
 
 void Renderer::start() {
 	spdlog::info("Renderer started");
-	int indicesCount = (data->size() / 7) + (2 * (data->size() / 7 / 4));
+	int indicesCount = (vb->getDataSize() / 7) + (2 * (vb->getDataSize() / 7 / 4));
 	for (size_t i = 0; i < indicesCount; i += 6) {
 		indices.push_back(0 + (4 * i / 6));
 		indices.push_back(1 + (4 * i / 6));
@@ -37,13 +36,12 @@ void Renderer::start() {
 	}*/
 
 	glGenVertexArrays(1, &VAO);
-	
+
 	glGenBuffers(1, &EBO);
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
 	glBindVertexArray(VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, data->size() * sizeof(float), data->data(), GL_STREAM_DRAW);
+	vb->bind();
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STREAM_DRAW);
@@ -70,7 +68,7 @@ void Renderer::draw(glm::mat4 projectionMatrix, glm::mat4 modelMatrix) {
 	mainShader->SetUniformsMat4f("view", SandBoxGlobals::camera.GetViewMatrix());
 	mainShader->SetUniformsMat4f("model", modelMatrix);
 	//glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	vb->bind();
 	//glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	// glBindVertexArray(0); // no need to unbind it every times

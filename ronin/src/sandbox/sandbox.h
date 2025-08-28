@@ -5,6 +5,7 @@
 
 #include "core/layer.h"
 #include "core/timestep.h"
+#include "core/openGL/vertex-buffer.h"
 #include "shader/shader.h"
 #include "voxel/chunck.h"
 #include "sandbox/camera.h"
@@ -15,6 +16,7 @@ public:
 
 private:
 	Shader* mainShader;
+	VertexBuffer* vb;
 	Renderer* renderer;
 
 	glm::mat4 projectionMatrix = glm::mat4(1.0f);
