@@ -59,4 +59,9 @@ public:
 	std::vector<float>* getVertexData();
 
 	std::string toString();
+
+private:
+	void pushColors();
+	void pushOffsetVerticesOn(float x = 0.0f, float y = 0.0f, float z = 0.0f);
+	void pushNormal(float x, float y, float z);
 };

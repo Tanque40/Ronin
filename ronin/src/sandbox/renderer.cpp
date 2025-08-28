@@ -15,7 +15,7 @@ Renderer::~Renderer() {
 
 void Renderer::start() {
 	spdlog::info("Renderer started");
-	int indicesCount = (vb->getDataSize() / 7) + (2 * (vb->getDataSize() / 7 / 4));
+	int indicesCount = (vb->getDataSize() / 4 / 7) + (2 * (vb->getDataSize() / 4 / 7 / 4));
 	for (size_t i = 0; i < indicesCount; i += 6) {
 		indices.push_back(0 + (4 * i / 6));
 		indices.push_back(1 + (4 * i / 6));
@@ -47,10 +47,13 @@ void Renderer::start() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STREAM_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)0);
 
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
@@ -67,6 +70,8 @@ void Renderer::draw(glm::mat4 projectionMatrix, glm::mat4 modelMatrix) {
 	mainShader->SetUniformsMat4f("projection", projectionMatrix);
 	mainShader->SetUniformsMat4f("view", SandBoxGlobals::camera.GetViewMatrix());
 	mainShader->SetUniformsMat4f("model", modelMatrix);
+	mainShader->SetUniformsVec3f("cameraPos", SandBoxGlobals::camera.GetPosition());
+	mainShader->SetUniformsVec4f("lightColor", SandBoxGlobals::lightColor);
 	//glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 	vb->bind();
 	//glDrawArrays(GL_TRIANGLES, 0, 6);

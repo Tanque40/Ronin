@@ -30,6 +30,8 @@ public:
 	void SetUniform1i(const std::string& name, int value);
 	void SetUniform4f(const std::string& name, glm::vec4 vector);
 	void SetUniformsMat4f(const std::string& name, const glm::mat4& mat4);
+	void SetUniformsVec3f(const std::string& name, const glm::vec3& vec3);
+	void SetUniformsVec4f(const std::string& name, const glm::vec4& vec4);
 
 private:
 	std::string parseShader(const std::string& filepath);

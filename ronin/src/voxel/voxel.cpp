@@ -68,204 +68,108 @@ std::vector<float>* Voxel::getVertexData() {
 
 	// * Check back side
 	if (voxelSides & 1) {
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
+		pushOffsetVerticesOn(0.0f, 0.0f, 0.0f);
+		pushColors();
+		pushNormal(0.0f, 0.0f, -1.0f);
+		pushOffsetVerticesOn(1.0f, 0.0f, 0.0f);
+		pushColors();
+		pushNormal(0.0f, 0.0f, -1.0f);
+		pushOffsetVerticesOn(1.0f, 1.0f, 0.0f);
+		pushColors();
+		pushNormal(0.0f, 0.0f, -1.0f);
+		pushOffsetVerticesOn(0.0f, 1.0f, 0.0f);
+		pushColors();
+		pushNormal(0.0f, 0.0f, -1.0f);
 		quadCount++;
 	}
 
 	// * Check left side
 	voxelSides >>= 1;
 	if (voxelSides & 1) {
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
+		pushOffsetVerticesOn(0.0f, 0.0f, 0.0f);
+		pushColors();
+		pushNormal(-1.0f, 0.0f, 0.0f);
+		pushOffsetVerticesOn(0.0f, 0.0f, 1.0f);
+		pushColors();
+		pushNormal(-1.0f, 0.0f, 0.0f);
+		pushOffsetVerticesOn(0.0f, 1.0f, 1.0f);
+		pushColors();
+		pushNormal(-1.0f, 0.0f, 0.0f);
+		pushOffsetVerticesOn(0.0f, 1.0f, 0.0f);
+		pushColors();
+		pushNormal(-1.0f, 0.0f, 0.0f);
 		quadCount++;
 	}
 
 	// * Check bottom side
 	voxelSides >>= 1;
 	if (voxelSides & 1) {
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
+		pushOffsetVerticesOn(0.0f, 0.0f, 0.0f);
+		pushColors();
+		pushNormal(0.0f, -1.0f, 0.0f);
+		pushOffsetVerticesOn(0.0f, 0.0f, 1.0f);
+		pushColors();
+		pushNormal(0.0f, -1.0f, 0.0f);
+		pushOffsetVerticesOn(1.0f, 0.0f, 1.0f);
+		pushColors();
+		pushNormal(0.0f, -1.0f, 0.0f);
+		pushOffsetVerticesOn(1.0f, 0.0f, 0.0f);
+		pushColors();
+		pushNormal(0.0f, -1.0f, 0.0f);
 		quadCount++;
 	}
 
 	// * Check right side
 	voxelSides >>= 1;
 	if (voxelSides & 1) {
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
+		pushOffsetVerticesOn(1.0f, 0.0f, 1.0f);
+		pushColors();
+		pushNormal(1.0f, 0.0f, 0.0f);
+		pushOffsetVerticesOn(1.0f, 0.0f, 0.0f);
+		pushColors();
+		pushNormal(1.0f, 0.0f, 0.0f);
+		pushOffsetVerticesOn(1.0f, 1.0f, 0.0f);
+		pushColors();
+		pushNormal(1.0f, 0.0f, 0.0f);
+		pushOffsetVerticesOn(1.0f, 1.0f, 1.0f);
+		pushColors();
+		pushNormal(1.0f, 0.0f, 0.0f);
 		quadCount++;
 	}
 
 	// * Check top side
 	voxelSides >>= 1;
 	if (voxelSides & 1) {
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
+		pushOffsetVerticesOn(0.0f, 1.0f, 1.0f);
+		pushColors();
+		pushNormal(0.0f, 1.0f, 0.0f);
+		pushOffsetVerticesOn(1.0f, 1.0f, 1.0f);
+		pushColors();
+		pushNormal(0.0f, 1.0f, 0.0f);
+		pushOffsetVerticesOn(1.0f, 1.0f, 0.0f);
+		pushColors();
+		pushNormal(0.0f, 1.0f, 0.0f);
+		pushOffsetVerticesOn(0.0f, 1.0f, 0.0f);
+		pushColors();
+		pushNormal(0.0f, 1.0f, 0.0f);
 		quadCount++;
 	}
 
 	// * Check front side
 	voxelSides >>= 1;
 	if (voxelSides & 1) {
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x + 1.0f);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
-		vertex.push_back(voxelOrigin.x);
-		vertex.push_back(voxelOrigin.y + 1.0f);
-		vertex.push_back(voxelOrigin.z + 1.0f);
-		vertex.push_back(color.r);
-		vertex.push_back(color.g);
-		vertex.push_back(color.b);
-		vertex.push_back(color.a);
+		pushOffsetVerticesOn(0.0f, 0.0f, 1.0f);
+		pushColors();
+		pushNormal(0.0f, 0.0f, 1.0f);
+		pushOffsetVerticesOn(1.0f, 0.0f, 1.0f);
+		pushColors();
+		pushNormal(0.0f, 0.0f, 1.0f);
+		pushOffsetVerticesOn(1.0f, 1.0f, 1.0f);
+		pushColors();
+		pushNormal(0.0f, 0.0f, 1.0f);
+		pushOffsetVerticesOn(0.0f, 1.0f, 1.0f);
+		pushColors();
+		pushNormal(0.0f, 0.0f, 1.0f);
 		quadCount++;
 	}
 
@@ -291,3 +195,21 @@ std::string Voxel::toString() {
 	return voxelData;
 }
 
+void Voxel::pushColors() {
+	vertex.push_back(color.r);
+	vertex.push_back(color.g);
+	vertex.push_back(color.b);
+	vertex.push_back(color.a);
+}
+
+void Voxel::pushOffsetVerticesOn(float x, float y, float z) {
+	vertex.push_back(voxelOrigin.x + x);
+	vertex.push_back(voxelOrigin.y + y);
+	vertex.push_back(voxelOrigin.z + z);
+}
+
+void Voxel::pushNormal(float x, float y, float z) {
+	vertex.push_back(x);
+	vertex.push_back(y);
+	vertex.push_back(z);
+}

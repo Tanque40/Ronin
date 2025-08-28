@@ -53,7 +53,7 @@ void SandBox::onAttach() {
 		});
 
 
-	chunk = Chunk(25);
+	chunk = Chunk(30);
 	chunk.generateChunk();
 	std::vector<float>* data = chunk.getData();
 	vb = new VertexBuffer();
@@ -168,6 +168,7 @@ void SandBox::onImGui(ImGuiIO& io, Timestep timeStep) {
 		/* if (ImGui::ColorEdit4("clear color", voxel.getVoxelColor())) {
 			updateBufferColor();
 		} */
+		ImGui::ColorEdit4("Light Color", glm::value_ptr(SandBoxGlobals::lightColor));
 
 		ImGui::Checkbox("Wireframe View", &isViewInWireframe);
 		ImGui::Text("Application \n average %.3f ms/frame \n(%.1f FPS)", timeStep.getMilliseconds(), io.Framerate);

@@ -30,12 +30,16 @@ void Shader::SetUniform1i(const std::string& name, int value) {
 	glUniform1i(getUniformLocation(name), value);
 }
 
-void Shader::SetUniform4f(const std::string& name, glm::vec4  vector) {
-	glUniform4fv(getUniformLocation(name), 1, &vector[0]);
-}
-
 void Shader::SetUniformsMat4f(const std::string& name, const glm::mat4& mat4) {
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mat4[0][0]);
+}
+
+void Shader::SetUniformsVec3f(const std::string& name, const glm::vec3& vec3) {
+	glUniform3fv(getUniformLocation(name), 1, &vec3[0]);
+}
+
+void Shader::SetUniformsVec4f(const std::string& name, const glm::vec4& vec4) {
+	glUniform4fv(getUniformLocation(name), 1, &vec4[0]);
 }
 
 // * Utils

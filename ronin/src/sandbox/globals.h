@@ -10,4 +10,5 @@ public:
 	static bool idViewPortChanged;
 	static bool isOnMenu;
 	static bool fistMouse;
+	static glm::vec4 lightColor;
 };

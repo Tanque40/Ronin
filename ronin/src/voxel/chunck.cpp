@@ -15,7 +15,6 @@ void Chunk::generateChunk() {
 	data.clear();
 
 	int sideCount = (int)this->sideCount;
-	// Generate a sideCount x sideCount x sideCount chunk of voxels
 	for (int x = -sideCount / 2; x < sideCount / 2; x++) {
 		std::vector<std::vector<Voxel>> voxelRow;
 		for (int y = -sideCount / 2; y < sideCount / 2; y++) {
