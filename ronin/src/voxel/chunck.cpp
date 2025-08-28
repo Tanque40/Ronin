@@ -58,10 +58,10 @@ std::vector<float>* Chunk::getData() {
 }
 
 std::string Chunk::toString(bool showEachVoxelData) {
-	std::string chunkData = "Chunk: \n";
-	chunkData += "\tVoxels count: " + std::to_string(voxelCount) + "\n";
-	chunkData += "\tQuads count: " + std::to_string(quadCount) + "\n";
-	chunkData += "\tTriangles count: " + std::to_string(triangleCount) + "\n";
+	std::string chunkData = "\tChunk: \n";
+	chunkData += "\t\tVoxels count: " + std::to_string(voxelCount) + "\n";
+	chunkData += "\t\tQuads count: " + std::to_string(quadCount) + "\n";
+	chunkData += "\t\tTriangles count: " + std::to_string(triangleCount);
 
 	if (showEachVoxelData) {
 		chunkData += "Voxels data:\n";

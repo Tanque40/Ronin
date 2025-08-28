@@ -27,5 +27,6 @@ void main() {
 	vec4 specular = specularStrength * spec * lightColor;
 
 	vec4 result = (ambient + diffuse + specular) * vColor;
-	FragColor = result;
+	float gamma = 2.2;
+	FragColor= vec4(pow(result.rgb, vec3(1.0/gamma)), result.a);
 }

@@ -1,5 +1,4 @@
 # Personal ignores
-.vscode/
 bin-int/
 Makefile
 imgui.ini

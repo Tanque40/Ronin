@@ -79,8 +79,6 @@ void SandBox::onAttach() {
 		);
 	}
 
-	//modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f));
-
 	spdlog::info("Voxels matrix:\n{}", chunk.toString());
 }
 
