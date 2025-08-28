@@ -20,7 +20,8 @@ void Chunk::generateChunk() {
 		for (int y = -sideCount / 2; y < sideCount / 2; y++) {
 			std::vector<Voxel> voxelColumn;
 			for (int z = -sideCount / 2; z < sideCount / 2; z++) {
-				if (sqrt(pow(z, 2) + pow(x, 2) + pow(y, 2)) < (sideCount / 2)) {
+				if (sqrt(pow(z, 2) + pow(x, 2) + pow(y, 2)) >= (sideCount / 2) - 1 &&
+					sqrt(pow(z, 2) + pow(x, 2) + pow(y, 2)) <= (sideCount / 2)) {
 					glm::vec3 voxelOrigin(x, y, z);
 					glm::vec4 voxelColor(
 						static_cast<float>(rand() % 255) / 255.0f,
@@ -30,8 +31,6 @@ void Chunk::generateChunk() {
 					);
 					voxelColumn.push_back(Voxel(voxelOrigin, voxelColor, 63));
 					voxelCount++;
-					quadCount += voxelColumn.back().getQuadCount(); // Update the quad count for the voxel
-					triangleCount += voxelColumn.back().getQuadCount() * 2; // Each quad has 2 triangles
 				}
 			}
 			voxelRow.push_back(voxelColumn);
@@ -47,6 +46,9 @@ std::vector<float>* Chunk::getData() {
 		for (auto& voxelColumn : voxelRow) {
 			for (auto& voxel : voxelColumn) {
 				std::vector<float>* voxelData = voxel.getVertexData();
+				// Update the voxel's quad and triangle counts
+				quadCount += voxel.getQuadCount();
+				triangleCount += voxel.getQuadCount() * 2;
 				data.insert(data.end(), voxelData->begin(), voxelData->end());
 			}
 		}

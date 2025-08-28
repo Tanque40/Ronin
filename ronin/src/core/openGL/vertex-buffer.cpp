@@ -18,8 +18,8 @@ void VertexBuffer::unBind() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VertexBuffer::setData(void* data, unsigned int size) {
+void VertexBuffer::setData(void* data, unsigned int memorySize) {
 	glBindBuffer(GL_ARRAY_BUFFER, id);
-	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STREAM_DRAW);
-	dataSize = size;
+	glBufferData(GL_ARRAY_BUFFER, memorySize, data, GL_STREAM_DRAW);
+	dataSize = memorySize;
 }

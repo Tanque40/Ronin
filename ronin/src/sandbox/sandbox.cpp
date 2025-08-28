@@ -48,12 +48,12 @@ void SandBox::onAttach() {
 		SandBoxGlobals::camera.ProcessMouseMovement(xoffset, yoffset);
 		});
 	glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
-		spdlog::info("Mouse scroll: xoffset: {}, yoffset: {}", xoffset, yoffset);
+		//spdlog::info("Mouse scroll: xoffset: {}, yoffset: {}", xoffset, yoffset);
 		SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
 		});
 
 
-	chunk = Chunk(30);
+	chunk = Chunk(25);
 	chunk.generateChunk();
 	std::vector<float>* data = chunk.getData();
 	vb = new VertexBuffer();
@@ -66,7 +66,7 @@ void SandBox::onAttach() {
 	renderer->start();
 
 	if (isProjectionInPerspective) {
-		projectionMatrix = glm::perspective(glm::radians(SandBoxGlobals::camera.Zoom), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 100.0f);
+		projectionMatrix = glm::perspective(glm::radians(SandBoxGlobals::camera.Zoom), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 200.0f);
 	}
 	else {
 		projectionMatrix = glm::ortho(

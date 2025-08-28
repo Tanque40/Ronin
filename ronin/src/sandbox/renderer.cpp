@@ -15,7 +15,7 @@ Renderer::~Renderer() {
 
 void Renderer::start() {
 	spdlog::info("Renderer started");
-	int indicesCount = (vb->getDataSize() / 4 / 7) + (2 * (vb->getDataSize() / 4 / 7 / 4));
+	int indicesCount = (vb->getDataSize() / 10) + (2 * (vb->getDataSize() / 10 / 4)) + 1;
 	for (size_t i = 0; i < indicesCount; i += 6) {
 		indices.push_back(0 + (4 * i / 6));
 		indices.push_back(1 + (4 * i / 6));
@@ -25,7 +25,8 @@ void Renderer::start() {
 		indices.push_back(3 + (4 * i / 6));
 	}
 
-	/*spdlog::info("Renderer started with {} vertices and {} indices", data->size() / 7, indices.size());
+	/*
+	spdlog::info("Renderer started with {} vertices and {} indices", vb->getDataSize() / 7, indices.size());
 	spdlog::info("indices: ");
 	for (size_t i = 0; i < indices.size(); i += 6) {
 		spdlog::info(
@@ -33,7 +34,8 @@ void Renderer::start() {
 			i / 6,
 			indices[i], indices[i + 1], indices[i + 2],
 			indices[i + 3], indices[i + 4], indices[i + 5]);
-	}*/
+	}
+	*/
 
 	glGenVertexArrays(1, &VAO);
 
@@ -54,6 +56,7 @@ void Renderer::start() {
 
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void*)(7 * sizeof(float)));
+
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
