@@ -24,7 +24,7 @@ git clone --recursive git@github.com:Tanque40/Ronin.git
 
 ## Usage
 
-By this moment this project only works in apple sillicon. The recomendation is use the helpers scripts to start the  project. To build the complete project firts give execution permisson for scripts.
+By this moment this project only works in apple sillicon. The recomendation is use the helpers scripts to start the project. To build the complete project first give execution permisson for scripts.
 
 ```bash
 

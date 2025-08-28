@@ -65,5 +65,14 @@
 	"editor.wrappingStrategy": "advanced",
 	"editor.wrappingIndent": "deepIndent",
 	"editor.wrapOnEscapedLineFeeds": true,
-	"editor.formatOnSave": true
+	"editor.formatOnSave": true,
+	"[markdown]": {
+		"editor.rulers": [80],
+		"editor.lineNumbers": "relative",
+		"editor.wordWrap": "wordWrapColumn",
+		"editor.wrappingStrategy": "advanced",
+		"editor.wrappingIndent": "deepIndent",
+		"editor.wrapOnEscapedLineFeeds": true,
+		"editor.formatOnSave": true
+	}
 }
