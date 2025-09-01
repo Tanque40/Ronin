@@ -53,7 +53,7 @@ void SandBox::onAttach() {
 		});
 
 
-	chunk = Chunk(25);
+	chunk = Chunk(20);
 	chunk.generateChunk();
 	std::vector<float>* data = chunk.getData();
 	vb = new VertexBuffer();

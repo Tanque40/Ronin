@@ -19,6 +19,7 @@ includeDir["SPDLOG"] = "ronin/vendor/repos/SPDLOG/include"
 -- ? This include search for other lua files
 include "ronin/vendor/repos/GLFW"
 include "ronin/vendor/repos/ImGUI"
+include "ronin/vendor/repos/GLAD"
 
 project 'Ronin'
 location 'ronin'
@@ -47,7 +48,7 @@ defines {
 includedirs {
 	"%{prj.location}/src/",
 	"%{includeDir.GLFW}",
-	"%{includeDir.GLEW}",
+	"%{includeDir.GLAD}",
 	"%{includeDir.GLM}",
 	"%{includeDir.IMGUI}",
 	"%{includeDir.SPDLOG}",
@@ -55,12 +56,10 @@ includedirs {
 
 filter "system:macosx"
 architecture 'ARM64'
-libdirs {
-	"/usr/local/lib/"
-}
+
 links {
 	"GLFW",
-	"GLEW",
+	"GLAD",
 	"IMGUI",
 	"Cocoa.framework",
 	"OpenGL.framework",
@@ -70,14 +69,6 @@ links {
 filter "system:windows"
 architecture 'x86_64'
 systemversion "latest"
-includedirs {
-	"%{prj.location}/src/",
-	"%{includeDir.GLFW}",
-	"%{includeDir.GLAD}",
-	"%{includeDir.GLM}",
-	"%{includeDir.IMGUI}",
-	"%{includeDir.SPDLOG}",
-}
 links {
 	"GLFW",
 	"GLAD",
@@ -90,7 +81,6 @@ defines {
 	"GLFW_INCLUDE_NONE",
 }
 buildoptions { "/utf-8" }
-include "ronin/vendor/repos/GLAD"
 
 filter "configurations:Debug"
 runtime "Debug"

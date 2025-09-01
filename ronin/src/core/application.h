@@ -3,15 +3,8 @@
 #include "roninpch.h"
 
 #include <imgui.h>
-#ifdef __APPLE__
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
-#endif
-
-#ifdef _WIN32
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
-#endif
 
 #include "sandbox/sandbox.h"
 #include "core/timestep.h"
@@ -45,23 +38,10 @@ public:
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 
-	#ifdef __APPLE__
-		// glew: load all OpenGL function pointers
-		// ---------------------------------------
-		GLenum err = glewInit();
-		if (GLEW_OK != err) {
-			std::cerr << "Error: " << glewGetErrorString(err) << std::endl;
-			glfwTerminate();
-			return -1;
-		}
-	#endif
-
-	#ifdef _WIN32
-		if( !gladLoadGLLoader( ( GLADloadproc ) glfwGetProcAddress ) ) {
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 			std::cout << "Failed to initialize GLAD" << std::endl;
 			return -1;
 		}
-	#endif
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -69,6 +49,7 @@ public:
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
@@ -99,6 +80,7 @@ public:
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 			{
+				ImGui::ShowDemoWindow();
 				sandBox.onImGui(io, float(timestep));
 			}
 			// Rendering

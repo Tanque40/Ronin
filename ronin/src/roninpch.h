@@ -1,14 +1,10 @@
 #pragma once
 
-#ifdef __APPLE__
-#include <GL/glew.h>
-#endif
-
 #ifdef _WIN32
 #include <Windows.h>
-#include <glad/glad.h>
 #endif
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <string>

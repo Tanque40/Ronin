@@ -1,6 +1,5 @@
 project "GLAD"
 kind "StaticLib"
-architecture 'x86_64'
 language "C"
 staticruntime "on"
 
@@ -18,7 +17,11 @@ includedirs {
 	"include"
 }
 
+filter "system:macosx"
+architecture 'ARM64'
+
 filter "system:windows"
+architecture 'x86_64'
 systemversion "latest"
 
 filter "configurations:Debug"
