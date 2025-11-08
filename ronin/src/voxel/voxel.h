@@ -3,6 +3,11 @@
 
 #include <glm/glm.hpp>
 
+enum class VoxelType {
+	Air,
+	Solid
+};
+
 class Voxel {
 private:
 	// * ====================================
@@ -24,6 +29,7 @@ private:
 	glm::vec4 color; // * Default white
 	std::vector<float> vertex;
 	bool isActive = true; // * If the voxel is active or not
+	VoxelType type = VoxelType::Air;
 
 	/*
 	 * I will use a bits as a reference to the show / dont show sides of the voxel.

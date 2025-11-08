@@ -7,8 +7,8 @@ class SandBoxGlobals {
 public:
 	static Camera camera;
 	static unsigned int width, height;
-	static bool idViewPortChanged;
+	static bool isViewPortChanged;
 	static bool isOnMenu;
-	static bool fistMouse;
+	static bool firstMouse;
 	static glm::vec4 lightColor;
 };

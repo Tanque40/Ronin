@@ -12,6 +12,10 @@
 float lastX = SandBoxGlobals::width / 2.0f;
 float lastY = SandBoxGlobals::height / 2.0f;
 
+void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+
 SandBox::SandBox() {}
 
 SandBox::SandBox(GLFWwindow* _window) : window(_window) {
@@ -24,36 +28,13 @@ void SandBox::onAttach() {
 	spdlog::info("SandBox running");
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
-		// make sure the viewport matches the new window dimensions; note that width and
-		// height will be significantly larger than specified on retina displays.
-		SandBoxGlobals::width = width;
-		SandBoxGlobals::height = height;
-		SandBoxGlobals::idViewPortChanged = true;
-		glViewport(0, 0, width, height);
-		});
+	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
-		if (SandBoxGlobals::fistMouse) {
-			lastX = xpos;
-			lastY = ypos;
-			SandBoxGlobals::fistMouse = false;
-		}
-		float xoffset = xpos - lastX;
-		float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-		lastX = xpos;
-		lastY = ypos;
-
-		SandBoxGlobals::camera.ProcessMouseMovement(xoffset, yoffset);
-		});
-	glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
-		//spdlog::info("Mouse scroll: xoffset: {}, yoffset: {}", xoffset, yoffset);
-		SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
-		});
+	glfwSetCursorPosCallback(window, mouseCallback);
+	glfwSetScrollCallback(window, scrollCallback);
 
 
-	chunk = Chunk(20);
+	chunk = Chunk(100);
 	chunk.generateChunk();
 	std::vector<float>* data = chunk.getData();
 	vb = new VertexBuffer();
@@ -64,20 +45,7 @@ void SandBox::onAttach() {
 	mainShader = new Shader("res/shaders/initial.vs.glsl", "res/shaders/initial.fs.glsl");
 	renderer = new Renderer(vb, mainShader);
 	renderer->start();
-
-	if (isProjectionInPerspective) {
-		projectionMatrix = glm::perspective(glm::radians(SandBoxGlobals::camera.Zoom), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 200.0f);
-	}
-	else {
-		projectionMatrix = glm::ortho(
-			(float)SandBoxGlobals::width / -1.0f,
-			(float)SandBoxGlobals::height / 1.0f,
-			(float)SandBoxGlobals::width / -1.0f,
-			(float)SandBoxGlobals::height / 1.0f,
-			-10.0f,
-			10.0f
-		);
-	}
+	projectionMatrix = glm::perspective(glm::radians(SandBoxGlobals::camera.Zoom), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 200.0f);
 
 	spdlog::info("Voxels matrix:\n{}", chunk.toString());
 }
@@ -87,7 +55,7 @@ void SandBox::onDetach() {
 }
 
 void SandBox::onUpdate(Timestep timeStep) {
-	if (SandBoxGlobals::idViewPortChanged) {
+	if (SandBoxGlobals::isViewPortChanged) {
 		framebuffer_size_callback();
 	}
 	if (isViewInWireframe) {
@@ -122,35 +90,21 @@ void SandBox::onEvent(GLFWwindow* window, Timestep timeStep) {
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		if (SandBoxGlobals::isOnMenu) {
-			SandBoxGlobals::isOnMenu = false;
+		// tell GLFW to capture our mouse
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetCursorPosCallback(window, nullptr);
+		glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
+			ImGuiIO& io = ImGui::GetIO();
+			io.AddMouseWheelEvent(xoffset, yoffset);
+			});
+	}
 
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			SandBoxGlobals::fistMouse = true; // reset first mouse movement flag
-			glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
-				if (SandBoxGlobals::fistMouse) {
-					lastX = xpos;
-					lastY = ypos;
-					SandBoxGlobals::fistMouse = false;
-				}
-				float xoffset = xpos - lastX;
-				float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-				lastX = xpos;
-				lastY = ypos;
-
-				SandBoxGlobals::camera.ProcessMouseMovement(xoffset, yoffset);
-				});
-			glfwSetScrollCallback(window, [](GLFWwindow* window, double xoffset, double yoffset) {
-				SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
-				});
-		}
-		else {
-			SandBoxGlobals::isOnMenu = true;
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			glfwSetCursorPosCallback(window, nullptr);
-			glfwSetScrollCallback(window, nullptr);
-		}
+	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+		// tell GLFW to capture our mouse
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		SandBoxGlobals::firstMouse = true;
+		glfwSetCursorPosCallback(window, mouseCallback);
+		glfwSetScrollCallback(window, scrollCallback);
 	}
 
 	// ! Close window and program
@@ -181,6 +135,46 @@ void SandBox::onImGui(ImGuiIO& io, Timestep timeStep) {
 } */
 
 void SandBox::framebuffer_size_callback() {
-	SandBoxGlobals::idViewPortChanged = false;
+	SandBoxGlobals::isViewPortChanged = false;
 	projectionMatrix = glm::perspective(glm::radians(SandBoxGlobals::camera.Zoom), (float)SandBoxGlobals::width / (float)SandBoxGlobals::height, 0.1f, 100.0f);
+}
+
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+	// make sure the viewport matches the new window dimensions; note that width and
+		// height will be significantly larger than specified on retina displays.
+	SandBoxGlobals::width = width;
+	SandBoxGlobals::height = height;
+	SandBoxGlobals::isViewPortChanged = true;
+	glViewport(0, 0, width, height);
+}
+
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
+	if (SandBoxGlobals::firstMouse) {
+		lastX = xpos;
+		lastY = ypos;
+		SandBoxGlobals::firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+	lastX = xpos;
+	lastY = ypos;
+
+	SandBoxGlobals::camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+	SandBoxGlobals::camera.Zoom -= (float)yoffset / 4;
+	if (SandBoxGlobals::camera.Zoom < 1.0f)
+		SandBoxGlobals::camera.Zoom = 1.0f;
+	if (SandBoxGlobals::camera.Zoom > 50.0f)
+		SandBoxGlobals::camera.Zoom = 50.0f;
+	SandBoxGlobals::camera.ProcessMouseScroll(yoffset);
 }
