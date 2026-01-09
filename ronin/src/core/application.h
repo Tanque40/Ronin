@@ -54,10 +54,6 @@ public:
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 
-		// Setup Platform/Renderer backends
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init(glsl_version);
-
 		float time = glfwGetTime(), lastFrameTime = glfwGetTime();
 		Timestep timestep = time - lastFrameTime;
 		lastFrameTime = time;
@@ -67,6 +63,9 @@ public:
 		SandBox sandBox(window);
 		sandBox.onAttach();
 
+		// Setup Platform/Renderer backends
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplOpenGL3_Init(glsl_version);
 		while (!glfwWindowShouldClose(window)) {
 			time = glfwGetTime();
 			timestep = time - lastFrameTime;
